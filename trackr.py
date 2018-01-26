@@ -8,24 +8,9 @@ import openpyxl
 import requests
 
 from hackerRank import update_HackerRank
+from duolingo import update_Duolingo
 
 import personal
-
-def update_Duolingo(wb):
-    
-    duoUrl = "https://www.duolingo.com/users/" + personal.data["duoUsername"]
-    duoResponse = requests.get(duoUrl)
-    duoResponse.raise_for_status()
-    duoData = json.loads(duoResponse.text)
-    
-    duoSheet = wb.get_sheet_by_name("Duolingo")
-    newRow = duoSheet.max_row + 1
-    duoSheet["A" + str(newRow)] = datetime.date.today().strftime("%B %d, %Y")
-
-    for i in range(len(duoData["languages"])):
-        duoSheet[str(openpyxl.utils.get_column_letter(i+2)) + str(newRow)] = duoData["languages"][i]["points"]
-        
-    return wb
     
 def update_Codewars(wb):
     cwUrl = "https://www.codewars.com/api/v1/users/" + personal.data["cwUsername"]
@@ -81,10 +66,10 @@ def update_Goodreads(wb):
 def main():
     wb = openpyxl.load_workbook('trackr.xlsx')      
     wb = update_Duolingo(wb)
-    wb = update_Codewars(wb)
-    wb = update_Chess(wb)
-    wb = update_Goodreads(wb)
-    wb = update_HackerRank(wb)
+    #wb = update_Codewars(wb)
+    #wb = update_Chess(wb)
+    #wb = update_Goodreads(wb)
+    #wb = update_HackerRank(wb)
     wb.save('trackr.xlsx')
     
 main()
