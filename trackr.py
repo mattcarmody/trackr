@@ -10,26 +10,9 @@ import requests
 from hackerRank import update_HackerRank
 from duolingo import update_Duolingo
 from codewars import update_Codewars
+from chess import update_Chess
 
 import personal
-    
-def update_Chess(wb):
-    chessUrl = "https://api.chess.com/pub/player/" + personal.data["chessUsername"] + "/stats"
-    chessResponse = requests.get(chessUrl)
-    chessResponse.raise_for_status()
-    chessData = json.loads(chessResponse.text)
-    
-    chessSheet = wb.get_sheet_by_name("Chess")
-    newRow = chessSheet.max_row + 1
-    chessSheet["A" + str(newRow)] = datetime.date.today().strftime("%B %d, %Y")
-    
-    chessSheet["B" + str(newRow)] = chessData["chess_daily"]["last"]["rating"]
-    chessSheet["C" + str(newRow)] = chessData["chess960_daily"]["last"]["rating"]
-    chessSheet["D" + str(newRow)] = chessData["chess_rapid"]["last"]["rating"]
-    chessSheet["E" + str(newRow)] = chessData["chess_bullet"]["last"]["rating"]
-    chessSheet["F" + str(newRow)] = chessData["chess_blitz"]["last"]["rating"]
-    
-    return wb
     
 def update_Goodreads(wb):
     
