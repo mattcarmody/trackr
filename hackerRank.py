@@ -6,21 +6,23 @@ import re
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 
+import personal
+
 def update_HackerRank(wb):
-    url = "https://www.hackerrank.com/{USERNAME}"
+    url = "https://www.hackerrank.com/" + personal.data["hrUsername"]
 
     browser = webdriver.Firefox()
     browser.get(url)
     loginElem = browser.find_element_by_class_name("login").click()
 
     username = browser.find_element_by_name("login")
-    username.send_keys("{EMAIL}")
+    username.send_keys(personal.data["hrUsername"])
 
     password = browser.find_element_by_name("password")
-    password.send_keys("{PASSWORD}")
+    password.send_keys(personal.data["hrPassword"])
     password.send_keys(Keys.RETURN)
 
-    hackosUrl = "https://www.hackerrank.com/{USERNAME}/hackos"
+    hackosUrl = "https://www.hackerrank.com/" + personal.data["hrUsername"] + "/hackos"
     browser.get(hackosUrl)
     browser.refresh()
 

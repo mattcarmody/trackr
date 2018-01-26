@@ -9,9 +9,11 @@ import requests
 
 from hackerRank import update_HackerRank
 
+import personal
+
 def update_Duolingo(wb):
     
-    duoUrl = "https://www.duolingo.com/users/{USERNAME}"
+    duoUrl = "https://www.duolingo.com/users/" + personal.data["duoUsername"]
     duoResponse = requests.get(duoUrl)
     duoResponse.raise_for_status()
     duoData = json.loads(duoResponse.text)
@@ -26,8 +28,8 @@ def update_Duolingo(wb):
     return wb
     
 def update_Codewars(wb):
-    cwUrl = "https://www.codewars.com/api/v1/users/{USERNAME}"
-    cwResponse = requests.get(cwUrl, auth=("?access_key", "{ACCESS_KEY}"))
+    cwUrl = "https://www.codewars.com/api/v1/users/" + personal.data["cwUsername"]
+    cwResponse = requests.get(cwUrl, auth=("?access_key", personal.data["cwAccessKey"]))
     cwResponse.raise_for_status()
     cwData = json.loads(cwResponse.text)
     
@@ -40,7 +42,7 @@ def update_Codewars(wb):
     return wb
     
 def update_Chess(wb):
-    chessUrl = "https://api.chess.com/pub/player/{USERNAME}/stats"
+    chessUrl = "https://api.chess.com/pub/player/" + personal.data["chessUsername"] + "/stats"
     chessResponse = requests.get(chessUrl)
     chessResponse.raise_for_status()
     chessData = json.loads(chessResponse.text)
@@ -59,7 +61,7 @@ def update_Chess(wb):
     
 def update_Goodreads(wb):
     
-    bsUrl = "https://www.goodreads.com/review/list/{USER_ID}?shelf={SHELF}"
+    bsUrl = "https://www.goodreads.com/review/list/" + personal.data["grUserID"] + "?shelf=" + personal.data["grShelf"]
     res = requests.get(bsUrl)
     res.raise_for_status()
     bsSoup = bs4.BeautifulSoup(res.text, "lxml")
