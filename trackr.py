@@ -9,22 +9,9 @@ import requests
 
 from hackerRank import update_HackerRank
 from duolingo import update_Duolingo
+from codewars import update_Codewars
 
 import personal
-    
-def update_Codewars(wb):
-    cwUrl = "https://www.codewars.com/api/v1/users/" + personal.data["cwUsername"]
-    cwResponse = requests.get(cwUrl, auth=("?access_key", personal.data["cwAccessKey"]))
-    cwResponse.raise_for_status()
-    cwData = json.loads(cwResponse.text)
-    
-    cwSheet = wb.get_sheet_by_name("Codewars")
-    newRow = cwSheet.max_row + 1
-    cwSheet["A" + str(newRow)] = datetime.date.today().strftime("%B %d, %Y")
-    
-    cwSheet["B" + str(newRow)] = cwData["honor"]
-    
-    return wb
     
 def update_Chess(wb):
     chessUrl = "https://api.chess.com/pub/player/" + personal.data["chessUsername"] + "/stats"
@@ -66,10 +53,10 @@ def update_Goodreads(wb):
 def main():
     wb = openpyxl.load_workbook('trackr.xlsx')      
     wb = update_Duolingo(wb)
-    #wb = update_Codewars(wb)
-    #wb = update_Chess(wb)
-    #wb = update_Goodreads(wb)
-    #wb = update_HackerRank(wb)
+    wb = update_Codewars(wb)
+    wb = update_Chess(wb)
+    wb = update_Goodreads(wb)
+    wb = update_HackerRank(wb)
     wb.save('trackr.xlsx')
     
 main()
