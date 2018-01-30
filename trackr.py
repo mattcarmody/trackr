@@ -12,12 +12,27 @@ from goodreads import update_Goodreads
 import personal
 
 def main():
-    wb = openpyxl.load_workbook('trackr.xlsx')      
-    wb = update_Duolingo(wb)
-    wb = update_Codewars(wb)
-    wb = update_Chess(wb)
-    wb = update_Goodreads(wb)
-    wb = update_HackerRank(wb)
-    wb.save('trackr.xlsx')
+    wb = openpyxl.load_workbook(personal.data["xlsxTrackr"])      
+    try:
+        wb = update_Duolingo(wb)
+    except:
+        print("Duolingo failed...")
+    try:
+        wb = update_Codewars(wb)
+    except:
+        print("Codewars failed...")
+    try:
+        wb = update_Chess(wb)
+    except:
+        print("Chess failed...")
+    try:
+        wb = update_Goodreads(wb)
+    except:
+        print("Goodreads failed...")
+    try:
+        wb = update_HackerRank(wb)
+    except:
+        print("HackerRank failed...")
+    wb.save(personal.data["xlsxTrackr"])
     
 main()
