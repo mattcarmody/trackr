@@ -1,4 +1,5 @@
 # Component of trackr.py - saves data from HackerRank.com
+# Requires username and password in personal.data
 
 import bs4
 import datetime
@@ -38,5 +39,7 @@ def update_HackerRank(wb):
     newRow = hrSheet.max_row + 1
     hrSheet["A" + str(newRow)] = datetime.date.today().strftime("%B %d, %Y")
     hrSheet["B" + str(newRow)] = hackos
+    
+    browser.quit()
     
     return wb
