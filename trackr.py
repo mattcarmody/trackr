@@ -35,4 +35,5 @@ def main():
         print("HackerRank failed...")
     wb.save(personal.data["xlsxTrackr"])
     
-main()
+if __name__ == "__main__":
+    main()
