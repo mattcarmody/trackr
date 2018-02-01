@@ -17,7 +17,7 @@ def update_Duolingo(wb):
     
     duoSheet = wb.get_sheet_by_name("Duolingo")
     newRow = duoSheet.max_row + 1
-    duoSheet["A" + str(newRow)] = datetime.date.today().strftime("%B %d, %Y")
+    duoSheet["A" + str(newRow)] = "=DATE(" + datetime.date.today().strftime("%Y,%m,%d") + ")"
 
     for i in range(len(duoData["languages"])):
         duoSheet[str(openpyxl.utils.get_column_letter(i+2)) + str(newRow)] = duoData["languages"][i]["points"]

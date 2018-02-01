@@ -20,7 +20,7 @@ def update_Goodreads(wb):
     
     grSheet = wb.get_sheet_by_name("Goodreads")
     newRow = grSheet.max_row + 1
-    grSheet["A" + str(newRow)] = datetime.date.today().strftime("%B %d, %Y")
+    grSheet["A" + str(newRow)] = "=DATE(" + datetime.date.today().strftime("%Y,%m,%d") + ")"
     
     grSheet["B" + str(newRow)] = count
     

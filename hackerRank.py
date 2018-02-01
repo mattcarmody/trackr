@@ -37,7 +37,7 @@ def update_HackerRank(wb):
 
     hrSheet = wb.get_sheet_by_name("HackerRank")
     newRow = hrSheet.max_row + 1
-    hrSheet["A" + str(newRow)] = datetime.date.today().strftime("%B %d, %Y")
+    hrSheet["A" + str(newRow)] = "=DATE(" + datetime.date.today().strftime("%Y,%m,%d") + ")"
     hrSheet["B" + str(newRow)] = hackos
     
     browser.quit()

@@ -15,7 +15,7 @@ def update_Codewars(wb):
     
     cwSheet = wb.get_sheet_by_name("Codewars")
     newRow = cwSheet.max_row + 1
-    cwSheet["A" + str(newRow)] = datetime.date.today().strftime("%B %d, %Y")
+    cwSheet["A" + str(newRow)] = "=DATE(" + datetime.date.today().strftime("%Y,%m,%d") + ")"
     
     cwSheet["B" + str(newRow)] = cwData["honor"]
     

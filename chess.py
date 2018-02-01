@@ -15,7 +15,7 @@ def update_Chess(wb):
     
     chessSheet = wb.get_sheet_by_name("Chess")
     newRow = chessSheet.max_row + 1
-    chessSheet["A" + str(newRow)] = datetime.date.today().strftime("%B %d, %Y")
+    chessSheet["A" + str(newRow)] = "=DATE(" + datetime.date.today().strftime("%Y,%m,%d") + ")"
     
     chessSheet["B" + str(newRow)] = chessData["chess_daily"]["last"]["rating"]
     chessSheet["C" + str(newRow)] = chessData["chess960_daily"]["last"]["rating"]
