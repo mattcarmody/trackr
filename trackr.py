@@ -8,6 +8,7 @@ from duolingo import update_Duolingo
 from codewars import update_Codewars
 from chess import update_Chess
 from goodreads import update_Goodreads
+import pullFromEmail
 
 import personal
 
@@ -33,6 +34,10 @@ def main():
         wb = update_HackerRank(wb)
     except:
         print("HackerRank failed...")
+    try:
+        wb = pullFromEmail.update_Email(wb)
+    except:
+        print("Email update failed...")
     wb.save(personal.data["xlsxTrackr"])
     
 if __name__ == "__main__":
