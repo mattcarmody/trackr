@@ -8,15 +8,15 @@ import requests
 import personal
 
 def update_Codewars(wb):
-    cwUrl = "https://www.codewars.com/api/v1/users/" + personal.data["cwUsername"]
+    cwUrl = "https://www.codewars.com/api/v1/users/{}".format(personal.data["cwUsername"])
     cwResponse = requests.get(cwUrl, auth=("?access_key", personal.data["cwAccessKey"]))
     cwResponse.raise_for_status()
     cwData = json.loads(cwResponse.text)
     
     cwSheet = wb.get_sheet_by_name("Codewars")
     newRow = cwSheet.max_row + 1
-    cwSheet["A" + str(newRow)] = "=DATE(" + datetime.date.today().strftime("%Y,%m,%d") + ")"
+    cwSheet["A{}".format(newRow)] = "=DATE({})".format(datetime.date.today().strftime("%Y,%m,%d"))
     
-    cwSheet["B" + str(newRow)] = cwData["honor"]
+    cwSheet["B{}".format(newRow)] = cwData["honor"]
     
     return wb

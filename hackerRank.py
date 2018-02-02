@@ -10,7 +10,7 @@ from selenium.webdriver.common.keys import Keys
 import personal
 
 def update_HackerRank(wb):
-    url = "https://www.hackerrank.com/" + personal.data["hrUsername"]
+    url = "https://www.hackerrank.com/{}".format(personal.data["hrUsername"])
 
     browser = webdriver.Firefox()
     browser.get(url)
@@ -23,13 +23,21 @@ def update_HackerRank(wb):
     password.send_keys(personal.data["hrPassword"])
     password.send_keys(Keys.RETURN)
 
-    hackosUrl = "https://www.hackerrank.com/" + personal.data["hrUsername"] + "/hackos"
+    hackosUrl = "https://www.hackerrank.com/{}/hackos".format(personal.data["hrUsername"])
     browser.get(hackosUrl)
-    browser.refresh()
-
-    innerHTML = browser.execute_script("return document.body.innerHTML")
-    bsSoup = bs4.BeautifulSoup(innerHTML, "lxml")
-    h3 = bsSoup.find("h3")
+    
+    # Often has a 404 error, but refreshing helps
+    count = 0
+    while count < 15:
+        innerHTML = browser.execute_script("return document.body.innerHTML")
+        bsSoup = bs4.BeautifulSoup(innerHTML, "lxml")
+        try:
+            h3 = bsSoup.find("h3")
+            if "Hackos" in h3.text:
+                break
+        except:
+            count += 1
+            browser.refresh()
 
     hackosRegex = re.compile(r"Total Hackos: (\d*)")
     mo = hackosRegex.search(h3.text)
@@ -37,8 +45,8 @@ def update_HackerRank(wb):
 
     hrSheet = wb.get_sheet_by_name("HackerRank")
     newRow = hrSheet.max_row + 1
-    hrSheet["A" + str(newRow)] = "=DATE(" + datetime.date.today().strftime("%Y,%m,%d") + ")"
-    hrSheet["B" + str(newRow)] = hackos
+    hrSheet["A{}".format(newRow)] = "=DATE({})".format(datetime.date.today().strftime("%Y,%m,%d"))
+    hrSheet["B{}".format(newRow)] = hackos
     
     browser.quit()
     

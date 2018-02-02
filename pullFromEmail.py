@@ -39,7 +39,7 @@ def text2int(textnum, numwords={}):
     current = result = 0
     for word in textnum.split():
         if word not in numwords:
-            raise Exception("Illegal word: " + word)
+            raise Exception("Illegal word: {}".format(word))
         scale, increment = numwords[word]
         current = current * scale + increment
         if scale > 100:
@@ -84,7 +84,7 @@ def update_Email(wb):
         # Combine multi-word keywords (string items alongside one another)
         for i in range(len(words)-2, -1, -1):
             if type(words[i]) == str and type(words[i+1]) == str:
-                words[i] = words[i] + " " + words[i+1]
+                words[i] = "{} {}".format(words[i], words[i+1])
                 del words[i+1]   
 
         # Get row number by date of the email
@@ -93,7 +93,7 @@ def update_Email(wb):
         max_row = bodySheet.max_row
         row = max_row - 2 # placeholder in noticeable location in xlsx
         for i in range(1, max_row+1):
-            if bodySheet["A" + str(i)].value == pDate:
+            if bodySheet["A{}".format(i)].value == pDate:
                 row = i
                 break
         
@@ -101,15 +101,15 @@ def update_Email(wb):
         for i in range(0, len(words), 2):
             # Get column letter
             if type(words[i]) != str:
-                print("Oh no! I was expecting a str, not " + type(words[i]))
+                print("Oh no! I was expecting a str, not {}".format(type(words[i])))
                 break
             for key in METRIC_COLUMN_DICT:
                 if key in words[i].lower():
                     col = METRIC_COLUMN_DICT[key]
                     
             # Update cell value
-            bodySheet[col + str(row)].value += words[i+1]
-            print("Adding " + str(words[i+1]) + " to " + col + str(row))
+            bodySheet["{}{}".format(col, row)].value += words[i+1]
+            print("Adding {} to {}{}".format(words[i+1], col, row))
             
     print("Update from email complete.")
     imapObj.logout()

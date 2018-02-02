@@ -8,20 +8,20 @@ import requests
 import personal
 
 def update_Chess(wb):
-    chessUrl = "https://api.chess.com/pub/player/" + personal.data["chessUsername"] + "/stats"
+    chessUrl = "https://api.chess.com/pub/player/{}/stats".format(personal.data["chessUsername"])
     chessResponse = requests.get(chessUrl)
     chessResponse.raise_for_status()
     chessData = json.loads(chessResponse.text)
     
     chessSheet = wb.get_sheet_by_name("Chess")
     newRow = chessSheet.max_row + 1
-    chessSheet["A" + str(newRow)] = "=DATE(" + datetime.date.today().strftime("%Y,%m,%d") + ")"
+    chessSheet["A{}".format(newRow)] = "=DATE({})".format(datetime.date.today().strftime("%Y,%m,%d"))
     
-    chessSheet["B" + str(newRow)] = chessData["chess_daily"]["last"]["rating"]
-    chessSheet["C" + str(newRow)] = chessData["chess960_daily"]["last"]["rating"]
-    chessSheet["D" + str(newRow)] = chessData["chess_rapid"]["last"]["rating"]
-    chessSheet["E" + str(newRow)] = chessData["chess_bullet"]["last"]["rating"]
-    chessSheet["F" + str(newRow)] = chessData["chess_blitz"]["last"]["rating"]
+    chessSheet["B{}".format(newRow)] = chessData["chess_daily"]["last"]["rating"]
+    chessSheet["C{}".format(newRow)] = chessData["chess960_daily"]["last"]["rating"]
+    chessSheet["D{}".format(newRow)] = chessData["chess_rapid"]["last"]["rating"]
+    chessSheet["E{}".format(newRow)] = chessData["chess_bullet"]["last"]["rating"]
+    chessSheet["F{}".format(newRow)] = chessData["chess_blitz"]["last"]["rating"]
     
     return wb
     

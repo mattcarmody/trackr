@@ -9,7 +9,7 @@ import personal
 
 def update_Goodreads(wb):
     
-    bsUrl = "https://www.goodreads.com/review/list/" + personal.data["grUserID"] + "?shelf=" + personal.data["grShelf"]
+    bsUrl = "https://www.goodreads.com/review/list/{}?shelf={}".format(personal.data["grUserID"], personal.data["grShelf"])
     res = requests.get(bsUrl)
     res.raise_for_status()
     bsSoup = bs4.BeautifulSoup(res.text, "lxml")
@@ -20,8 +20,8 @@ def update_Goodreads(wb):
     
     grSheet = wb.get_sheet_by_name("Goodreads")
     newRow = grSheet.max_row + 1
-    grSheet["A" + str(newRow)] = "=DATE(" + datetime.date.today().strftime("%Y,%m,%d") + ")"
+    grSheet["A{}".format(newRow)] = "=DATE({})".format(datetime.date.today().strftime("%Y,%m,%d"))
     
-    grSheet["B" + str(newRow)] = count
+    grSheet["B{}".format(newRow)] = count
     
     return wb
