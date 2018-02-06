@@ -9,7 +9,7 @@ from selenium.webdriver.common.keys import Keys
 
 import personal
 
-def new_date_row(sheet): 
+def new_date_row(sheet): # Because two tables share the HackerRank xlsx sheet
     check_row = sheet.max_row
     while sheet["A{}".format(check_row)].value == None:
         check_row -= 1
@@ -53,6 +53,7 @@ def update_HackerRank(wb):
             mo = hackosRegex.search(h3.text)
             hackos = int(mo.group(1))
         
+        # Extract table data line by line
         table = bsSoup.findAll("div", {"class":"hacko-transaction-list-view"})
         try:
             for row in table:
@@ -63,15 +64,16 @@ def update_HackerRank(wb):
         except:
             pass
         
-    # Reverse order of interior lists
+    # Reverse order of table rows
     data = data[::-1]
     
-    # Reverse ID numbers
+    # Renumber IDs (reverse direction)
     for i in range(len(data)):
         data[i][0] = i+1
     
-    # Put into .xlsx if it's not already there
+    # Put each line item into .xlsx if it's not already there
     hrSheet = wb.get_sheet_by_name("HackerRank")
+    selectAdd = 0
     for i, row in enumerate(data):
         if data[i][1] == hrSheet["F{}".format(i+2)].value:
             pass
@@ -82,10 +84,18 @@ def update_HackerRank(wb):
             hrSheet["F{}".format(i+2)].value = data[i][1]
             hrSheet["G{}".format(i+2)].value = data[i][2]
             print("Added: {}, {}, {}".format(data[i][0], data[i][1], data[i][2]))
+            # Add in identifier if line item meets exercise criteria
+            if "logged in" in data[i][1] or "Hackos everyone" in data[i][1]:
+                hrSheet["I{}".format(i+2)].value = "N"
+            else:
+                hrSheet["I{}".format(i+2)].value = "Y"
+                selectAdd += data[i][2]
     
+    # Add daily values to .xlsx
     newRow = new_date_row(hrSheet)
     hrSheet["A{}".format(newRow)] = "=DATE({})".format(datetime.date.today().strftime("%Y,%m,%d"))
     hrSheet["B{}".format(newRow)] = hackos
+    hrSheet["C{}".format(newRow)] = int(hrSheet["C{}".format(newRow-1)].value) + selectAdd
     
     browser.quit()
     
