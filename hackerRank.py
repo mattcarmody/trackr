@@ -7,7 +7,7 @@ import re
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 
-import personal
+import personal  
 
 def update_HackerRank(wb):
     url = "https://www.hackerrank.com/{}".format(personal.data["hrUsername"])
@@ -23,27 +23,59 @@ def update_HackerRank(wb):
     password.send_keys(personal.data["hrPassword"])
     password.send_keys(Keys.RETURN)
 
-    hackosUrl = "https://www.hackerrank.com/{}/hackos".format(personal.data["hrUsername"])
-    browser.get(hackosUrl)
-    
-    # Often has a 404 error, but refreshing helps
-    count = 0
-    while count < 15:
-        innerHTML = browser.execute_script("return document.body.innerHTML")
-        bsSoup = bs4.BeautifulSoup(innerHTML, "lxml")
+    data = []
+    for page in range(1, 4):
+        hackosUrl = "https://www.hackerrank.com/{}/hackos/page/{}".format(personal.data["hrUsername"], page)
+        browser.get(hackosUrl)
+        
+        # Often has a 404 error, but refreshing helps
+        count = 0
+        while count < 15:
+            innerHTML = browser.execute_script("return document.body.innerHTML")
+            bsSoup = bs4.BeautifulSoup(innerHTML, "lxml")
+            try:
+                h3 = bsSoup.find("h3")
+                if "Hackos" in h3.text:
+                    break
+            except:
+                count += 1
+                browser.refresh()
+        # Extract Total Hackos count from first page
+        if page == 1:
+            hackosRegex = re.compile(r"Total Hackos: (\d*)")
+            mo = hackosRegex.search(h3.text)
+            hackos = int(mo.group(1))
+        
+        table = bsSoup.findAll("div", {"class":"hacko-transaction-list-view"})
         try:
-            h3 = bsSoup.find("h3")
-            if "Hackos" in h3.text:
-                break
+            for row in table:
+                temp = []
+                for col in row.findAll("p"):
+                    temp.append(col.text)
+                data.append(temp)
         except:
-            count += 1
-            browser.refresh()
-
-    hackosRegex = re.compile(r"Total Hackos: (\d*)")
-    mo = hackosRegex.search(h3.text)
-    hackos = int(mo.group(1))
-
+            pass
+        
+    # Reverse order of interior lists
+    data = data[::-1]
+    
+    # Reverse ID numbers
+    for i in range(len(data)):
+        data[i][0] = i+1
+    
+    # Put into .xlsx if it's not already there
     hrSheet = wb.get_sheet_by_name("HackerRank")
+    for i, row in enumerate(data):
+        if data[i][1] == hrSheet["F{}".format(i+2)].value:
+            pass
+        elif hrSheet["E{}".format(i+2)].value:
+            print("Parsed table doesn't match log at index {}".format(i))
+        else:
+            hrSheet["E{}".format(i+2)].value = data[i][0]
+            hrSheet["F{}".format(i+2)].value = data[i][1]
+            hrSheet["G{}".format(i+2)].value = data[i][2]
+            print("Added: {}, {}, {}".format(data[i][0], data[i][1], data[i][2]))
+    
     newRow = hrSheet.max_row + 1
     hrSheet["A{}".format(newRow)] = "=DATE({})".format(datetime.date.today().strftime("%Y,%m,%d"))
     hrSheet["B{}".format(newRow)] = hackos
