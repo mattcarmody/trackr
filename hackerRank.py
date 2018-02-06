@@ -7,7 +7,14 @@ import re
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 
-import personal  
+import personal
+
+def new_date_row(sheet): 
+    check_row = sheet.max_row
+    while sheet["A{}".format(check_row)].value == None:
+        check_row -= 1
+    check_row += 1
+    return check_row
 
 def update_HackerRank(wb):
     url = "https://www.hackerrank.com/{}".format(personal.data["hrUsername"])
@@ -76,7 +83,7 @@ def update_HackerRank(wb):
             hrSheet["G{}".format(i+2)].value = data[i][2]
             print("Added: {}, {}, {}".format(data[i][0], data[i][1], data[i][2]))
     
-    newRow = hrSheet.max_row + 1
+    newRow = new_date_row(hrSheet)
     hrSheet["A{}".format(newRow)] = "=DATE({})".format(datetime.date.today().strftime("%Y,%m,%d"))
     hrSheet["B{}".format(newRow)] = hackos
     
