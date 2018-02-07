@@ -15,8 +15,13 @@ def update_Codewars(wb):
     
     cwSheet = wb.get_sheet_by_name("Codewars")
     newRow = cwSheet.max_row + 1
-    cwSheet["A{}".format(newRow)] = "=DATE({})".format(datetime.date.today().strftime("%Y,%m,%d"))
     
-    cwSheet["B{}".format(newRow)] = cwData["honor"]
+    today = "=DATE({})".format(datetime.date.today().strftime("%Y,%-m,%-d"))
+    if not cwSheet["A{}".format(newRow-1)].value == today:
+        cwSheet["A{}".format(newRow)] = today
+        cwSheet["B{}".format(newRow)] = cwData["honor"]
+        print("Updated codewars.")
+    else:
+        print("Codewars already has data for today.")
     
     return wb

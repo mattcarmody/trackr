@@ -17,9 +17,14 @@ def update_Duolingo(wb):
     
     duoSheet = wb.get_sheet_by_name("Duolingo")
     newRow = duoSheet.max_row + 1
-    duoSheet["A{}".format(newRow)] = "=DATE({})".format(datetime.date.today().strftime("%Y,%m,%d"))
-
-    for i in range(len(duoData["languages"])):
-        duoSheet["{}{}".format(openpyxl.utils.get_column_letter(i+2), newRow)] = duoData["languages"][i]["points"]
+    
+    today = "=DATE({})".format(datetime.date.today().strftime("%Y,%-m,%-d"))
+    if not duoSheet["A{}".format(newRow-1)].value == today:
+        duoSheet["A{}".format(newRow)] = today
+        for i in range(len(duoData["languages"])):
+            duoSheet["{}{}".format(openpyxl.utils.get_column_letter(i+2), newRow)] = duoData["languages"][i]["points"]
+        print("Updated Duolingo.")
+    else:
+        print("Duolingo was already updated today.")
         
     return wb

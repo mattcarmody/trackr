@@ -15,13 +15,18 @@ def update_Chess(wb):
     
     chessSheet = wb.get_sheet_by_name("Chess")
     newRow = chessSheet.max_row + 1
-    chessSheet["A{}".format(newRow)] = "=DATE({})".format(datetime.date.today().strftime("%Y,%m,%d"))
     
-    chessSheet["B{}".format(newRow)] = chessData["chess_daily"]["last"]["rating"]
-    chessSheet["C{}".format(newRow)] = chessData["chess960_daily"]["last"]["rating"]
-    chessSheet["D{}".format(newRow)] = chessData["chess_rapid"]["last"]["rating"]
-    chessSheet["E{}".format(newRow)] = chessData["chess_bullet"]["last"]["rating"]
-    chessSheet["F{}".format(newRow)] = chessData["chess_blitz"]["last"]["rating"]
+    today = "=DATE({})".format(datetime.date.today().strftime("%Y,%-m,%-d"))
+    if not chessSheet["A{}".format(newRow-1)].value == today:
+        chessSheet["A{}".format(newRow)] = today
+        chessSheet["B{}".format(newRow)] = chessData["chess_daily"]["last"]["rating"]
+        chessSheet["C{}".format(newRow)] = chessData["chess960_daily"]["last"]["rating"]
+        chessSheet["D{}".format(newRow)] = chessData["chess_rapid"]["last"]["rating"]
+        chessSheet["E{}".format(newRow)] = chessData["chess_bullet"]["last"]["rating"]
+        chessSheet["F{}".format(newRow)] = chessData["chess_blitz"]["last"]["rating"]
+        print("Updated chess ratings.")
+    else:
+        print("Chess already has ratings for today.")
     
     return wb
     

@@ -20,8 +20,13 @@ def update_Goodreads(wb):
     
     grSheet = wb.get_sheet_by_name("Goodreads")
     newRow = grSheet.max_row + 1
-    grSheet["A{}".format(newRow)] = "=DATE({})".format(datetime.date.today().strftime("%Y,%m,%d"))
     
-    grSheet["B{}".format(newRow)] = count
+    today = "=DATE({})".format(datetime.date.today().strftime("%Y,%-m,%-d"))
+    if not grSheet["A{}".format(newRow-1)].value == today:
+        grSheet["A{}".format(newRow)] = today
+        grSheet["B{}".format(newRow)] = count
+        print("Updated Goodreads.")
+    else:
+        print("Goodreads has already been updated today.")
     
     return wb
