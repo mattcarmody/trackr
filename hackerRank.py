@@ -93,9 +93,14 @@ def update_HackerRank(wb):
     
     # Add daily values to .xlsx
     newRow = new_date_row(hrSheet)
-    hrSheet["A{}".format(newRow)] = "=DATE({})".format(datetime.date.today().strftime("%Y,%m,%d"))
-    hrSheet["B{}".format(newRow)] = hackos
-    hrSheet["C{}".format(newRow)] = int(hrSheet["C{}".format(newRow-1)].value) + selectAdd
+    today = "=DATE({})".format(datetime.date.today().strftime("%Y,%-m,%-d"))
+    if not hrSheet["A{}".format(newRow-1)].value == today:
+        hrSheet["A{}".format(newRow)] = today
+        hrSheet["B{}".format(newRow)] = hackos
+        hrSheet["C{}".format(newRow)] = int(hrSheet["C{}".format(newRow-1)].value) + selectAdd
+        print("Updated HackerRank daily totals.")
+    else:
+        print("HackerRank already has totals for today.")
     
     browser.quit()
     
