@@ -9,6 +9,8 @@ from selenium.webdriver.common.keys import Keys
 
 import personal
 
+today = "=DATE({})".format(datetime.date.today().strftime("%Y,%-m,%-d"))
+
 def new_date_row(sheet): # Because two tables share the HackerRank xlsx sheet
     check_row = sheet.max_row
     while sheet["A{}".format(check_row)].value == None:
@@ -71,7 +73,7 @@ def update_HackerRank(wb):
     for i in range(len(data)):
         data[i][0] = i+1
     
-    # Put each line item into .xlsx if it's not already there
+    # Put each new line item in .xlsx
     hrSheet = wb.get_sheet_by_name("HackerRank")
     selectAdd = 0
     for i, row in enumerate(data):
@@ -83,6 +85,7 @@ def update_HackerRank(wb):
             hrSheet["E{}".format(i+2)].value = data[i][0]
             hrSheet["F{}".format(i+2)].value = data[i][1]
             hrSheet["G{}".format(i+2)].value = data[i][2]
+            hrSheet["H{}".format(i+2)].value = today
             print("Added: {}, {}, {}".format(data[i][0], data[i][1], data[i][2]))
             # Add in identifier if line item meets exercise criteria
             if "logged in" in data[i][1] or "Hackos everyone" in data[i][1]:
@@ -91,9 +94,8 @@ def update_HackerRank(wb):
                 hrSheet["I{}".format(i+2)].value = "Y"
                 selectAdd += data[i][2]
     
-    # Add daily values to .xlsx
+    # Add new daily values to .xlsx
     newRow = new_date_row(hrSheet)
-    today = "=DATE({})".format(datetime.date.today().strftime("%Y,%-m,%-d"))
     if not hrSheet["A{}".format(newRow-1)].value == today:
         hrSheet["A{}".format(newRow)] = today
         hrSheet["B{}".format(newRow)] = hackos
