@@ -103,6 +103,7 @@ def update_Email(wb):
             if type(words[i]) != str:
                 print("Oh no! I was expecting a str, not {}".format(type(words[i])))
                 break
+            col = "N" #Default to Uncategorized column
             for key in METRIC_COLUMN_DICT:
                 if key in words[i].lower():
                     col = METRIC_COLUMN_DICT[key]
