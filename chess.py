@@ -1,10 +1,10 @@
 # Component of trackr.py - saves data from Chess.com
 # Requires a username in personal.data
 
-import datetime
 import json
 import requests
 
+from getDate import get_date
 import personal
 
 def update_Chess(wb):
@@ -16,7 +16,7 @@ def update_Chess(wb):
     chessSheet = wb.get_sheet_by_name("Chess")
     newRow = chessSheet.max_row + 1
     
-    today = "=DATE({})".format(datetime.date.today().strftime("%Y,%-m,%-d"))
+    today = get_date()
     if not chessSheet["A{}".format(newRow-1)].value == today:
         chessSheet["A{}".format(newRow)] = today
         chessSheet["B{}".format(newRow)] = chessData["chess_daily"]["last"]["rating"]

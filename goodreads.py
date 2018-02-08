@@ -2,9 +2,9 @@
 # Requires a user ID and shelf in personal.data
 
 import bs4
-import datetime
 import requests
 
+from getDate import get_date
 import personal
 
 def update_Goodreads(wb):
@@ -21,7 +21,7 @@ def update_Goodreads(wb):
     grSheet = wb.get_sheet_by_name("Goodreads")
     newRow = grSheet.max_row + 1
     
-    today = "=DATE({})".format(datetime.date.today().strftime("%Y,%-m,%-d"))
+    today = get_date()
     if not grSheet["A{}".format(newRow-1)].value == today:
         grSheet["A{}".format(newRow)] = today
         grSheet["B{}".format(newRow)] = count

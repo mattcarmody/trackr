@@ -2,14 +2,14 @@
 # Requires username and password in personal.data
 
 import bs4
-import datetime
 import re
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 
+from getDate import get_date
 import personal
 
-today = "=DATE({})".format(datetime.date.today().strftime("%Y,%-m,%-d"))
+today = get_date()
 
 def new_date_row(sheet): # Because two tables share the HackerRank xlsx sheet
     check_row = sheet.max_row

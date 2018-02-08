@@ -1,11 +1,11 @@
 # Component of trackr.py - saves data from Duolingo.com
 # Requires a username in personal.data
 
-import datetime
 import json
 import openpyxl
 import requests
 
+from getDate import get_date
 import personal
 
 def update_Duolingo(wb):
@@ -18,7 +18,7 @@ def update_Duolingo(wb):
     duoSheet = wb.get_sheet_by_name("Duolingo")
     newRow = duoSheet.max_row + 1
     
-    today = "=DATE({})".format(datetime.date.today().strftime("%Y,%-m,%-d"))
+    today = get_date()
     if not duoSheet["A{}".format(newRow-1)].value == today:
         duoSheet["A{}".format(newRow)] = today
         for i in range(len(duoData["languages"])):
