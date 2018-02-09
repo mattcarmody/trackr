@@ -3,7 +3,6 @@
 
 import json
 import requests
-import sqlite3
 
 from getDate import get_date
 import personal
