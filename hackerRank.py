@@ -9,16 +9,10 @@ from selenium.webdriver.common.keys import Keys
 from getDate import get_date
 import personal
 
-today = get_date()
-
-def new_date_row(sheet): # Because two tables share the HackerRank xlsx sheet
-    check_row = sheet.max_row
-    while sheet["A{}".format(check_row)].value == None:
-        check_row -= 1
-    check_row += 1
-    return check_row
-
-def update_HackerRank(wb):
+def update_HackerRank(cur):
+    today = get_date()
+    
+    # Navigate through login with Selenium
     url = "https://www.hackerrank.com/{}".format(personal.data["hrUsername"])
 
     browser = webdriver.Firefox()
@@ -32,6 +26,7 @@ def update_HackerRank(wb):
     password.send_keys(personal.data["hrPassword"])
     password.send_keys(Keys.RETURN)
 
+    # Navigate through pages of history
     data = []
     for page in range(1, 4):
         hackosUrl = "https://www.hackerrank.com/{}/hackos/page/{}".format(personal.data["hrUsername"], page)
@@ -66,44 +61,45 @@ def update_HackerRank(wb):
         except:
             pass
         
-    # Reverse order of table rows
-    data = data[::-1]
-    
     # Renumber IDs (reverse direction)
+    data = data[::-1]
     for i in range(len(data)):
         data[i][0] = i+1
     
-    # Put each new line item in .xlsx
-    hrSheet = wb.get_sheet_by_name("HackerRank")
+    
+    # Add to hackerRankItems table
+    cur.execute("SELECT * FROM hackerRankItems ORDER BY SlNumber")
+    all_entries = cur.fetchall()
+    
     selectAdd = 0
-    for i, row in enumerate(data):
-        if data[i][1] == hrSheet["F{}".format(i+2)].value:
-            pass
-        elif hrSheet["E{}".format(i+2)].value:
-            print("Parsed table doesn't match log at index {}".format(i))
+    diff = len(data) - len(all_entries)
+    
+    if diff == 0:
+        print("No new line items in HackerRank.")
+    for i in range(diff):
+        index = i + len(all_entries)
+        sql = '''INSERT INTO hackerRankItems(SlNumber, Action, HackosEarned, DateAdded, Qualifier) VALUES (?,?,?,?,?)'''
+        if "logged in" in data[index][1] or "Hackos everyone" in data[index][1]:
+            qualifier = "N"
         else:
-            hrSheet["E{}".format(i+2)].value = data[i][0]
-            hrSheet["F{}".format(i+2)].value = data[i][1]
-            hrSheet["G{}".format(i+2)].value = data[i][2]
-            hrSheet["H{}".format(i+2)].value = today
-            print("Added: {}, {}, {}".format(data[i][0], data[i][1], data[i][2]))
-            # Add in identifier if line item meets exercise criteria
-            if "logged in" in data[i][1] or "Hackos everyone" in data[i][1]:
-                hrSheet["I{}".format(i+2)].value = "N"
-            else:
-                hrSheet["I{}".format(i+2)].value = "Y"
-                selectAdd += data[i][2]
+            qualifier = "Y"
+            selectAdd += data[index][2]
+        new_entry = [data[index][0], data[index][1], data[index][2], today, qualifier]
+        cur.execute(sql, new_entry[0:5])
+        print("Added a line item for HackerRank.")
     
-    # Add new daily values to .xlsx
-    newRow = new_date_row(hrSheet)
-    if not hrSheet["A{}".format(newRow-1)].value == today:
-        hrSheet["A{}".format(newRow)] = today
-        hrSheet["B{}".format(newRow)] = hackos
-        hrSheet["C{}".format(newRow)] = int(hrSheet["C{}".format(newRow-1)].value) + selectAdd
-        print("Updated HackerRank daily totals.")
+    # Add to hackerRank table
+    cur.execute("SELECT * FROM hackerRank ORDER BY Date DESC LIMIT 1 ")
+    last_entry = cur.fetchone()
+    
+    if today != last_entry[0]:
+        sql = ''' INSERT INTO hackerRank(Date, Hackos, SelectHackos) VALUES (?,?,?)'''
+        new_entry = [today, hackos, last_entry[2]+selectAdd]
+        cur.execute(sql, new_entry[0:3])
+        print("New data added to HackerRank daily table.")
     else:
-        print("HackerRank already has totals for today.")
+        print("HackerRank was already updated today.")
     
-    browser.quit()
+    browser.quit() 
+    return cur
     
-    return wb

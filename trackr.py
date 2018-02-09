@@ -32,11 +32,11 @@ def main():
             cur = update_Goodreads(cur)
         except:
             print("Goodreads failed...")
-        '''try:
-            wb = update_HackerRank(wb)
+        try:
+            cur = update_HackerRank(cur)
         except:
             print("HackerRank failed...")
-        try:
+        '''try:
             wb = pullFromEmail.update_Email(wb)
         except:
             print("Email update failed...")
