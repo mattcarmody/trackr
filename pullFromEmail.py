@@ -1,4 +1,3 @@
-#!/usr/bin/python3
 # pullFromEmail.py - Adds activities from my email inbox to spreadsheet
 # I dicatate these emails to Siri, they follow a predictable format of:
 # keyword num keyword num keyword num ...
@@ -47,9 +46,7 @@ def text2int(textnum, numwords={}):
             current = 0
     return result + current
 
-def update_Email(wb):    
-    bodySheet = wb.get_sheet_by_name("Body")    
-    
+def update_Email(cur):    
     # Connect to dedicated email account and fetch relevant, unopened emails
     imapObj = imapclient.IMAPClient('imap.gmail.com', ssl=True)
     imapObj.login(TRACKR_EMAIL_ADDRESS, SECRET_PASSWORD)
@@ -87,32 +84,29 @@ def update_Email(wb):
                 words[i] = "{} {}".format(words[i], words[i+1])
                 del words[i+1]   
 
-        # Get row number by date of the email
-        date = message['Date']
-        pDate = datetime.datetime.strptime(date , '%a, %d %b %Y %X %z').strftime('=DATE(%Y,%-m,%-d)')
-        max_row = bodySheet.max_row
-        row = max_row - 2 # placeholder in noticeable location in xlsx
-        for i in range(1, max_row+1):
-            if bodySheet["A{}".format(i)].value == pDate:
-                row = i
-                break
         
-        # Update xlsx for each keyword/number pair
+        # Call relevant db row for the email date
+        date = message['Date']
+        pDate = datetime.datetime.strptime(date , '%a, %d %b %Y %X %z').strftime('%m/%d/%y')
+        cur.execute('SELECT * FROM body WHERE Date = ?', (pDate,))
+        rel_entry = cur.fetchone()
+        
+        # Update relevant value for each keyword/number pair
         for i in range(0, len(words), 2):
-            # Get column letter
             if type(words[i]) != str:
                 print("Oh no! I was expecting a str, not {}".format(type(words[i])))
                 break
-            col = "N" #Default to Uncategorized column
+            keyword = "uncategorized"
             for key in METRIC_COLUMN_DICT:
                 if key in words[i].lower():
-                    col = METRIC_COLUMN_DICT[key]
+                    col = METRIC_COLUMN_DICT[key][0]
+                    col_name = METRIC_COLUMN_DICT[key][1]
                     
-            # Update cell value
-            bodySheet["{}{}".format(col, row)].value += words[i+1]
-            print("Adding {} to {}{}".format(words[i+1], col, row))
-            
+            new_value = rel_entry[col] + words[i+1]
+            cur.execute('UPDATE body SET {} = {} WHERE Date = \"{}\"'.format(col_name, new_value, pDate))
+            print("Adding {} to body's {}.".format(words[i+1], col_name))
+        
     print("Update from email complete.")
     imapObj.logout()
-    return wb
-
+    return cur
+    
