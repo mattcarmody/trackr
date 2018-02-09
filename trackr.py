@@ -1,9 +1,6 @@
 #!/usr/bin/python3
 # trackr.py - Automate record keeping for sites I frequent.
 
-### SWITCHING FROM XLSX TO SQLITE3 DB ###
-
-#import openpyxl
 import sqlite3
 
 from hackerRank import update_HackerRank
@@ -17,26 +14,25 @@ import personal
 
 def main():
     conn = sqlite3.connect("trackr.db")
-    with conn:
-        #wb = openpyxl.load_workbook(personal.data["xlsxTrackr"])      
-        #try:
+    with conn:     
         cur = conn.cursor()
-        cur = update_Duolingo(cur)
-        '''except:
+        try:
+            cur = update_Duolingo(cur)
+        except:
             print("Duolingo failed...")
         try:
-            conn = update_Codewars(wb)
+            cur = update_Codewars(cur)
         except:
             print("Codewars failed...")
         try:
-            wb = update_Chess(wb)
+            cur = update_Chess(cur)
         except:
             print("Chess failed...")
         try:
-            wb = update_Goodreads(wb)
+            cur = update_Goodreads(cur)
         except:
             print("Goodreads failed...")
-        try:
+        '''try:
             wb = update_HackerRank(wb)
         except:
             print("HackerRank failed...")
@@ -45,8 +41,6 @@ def main():
         except:
             print("Email update failed...")
         '''
-    #conn.close()
-    #wb.save(personal.data["xlsxTrackr"])
     
 if __name__ == "__main__":
     main()

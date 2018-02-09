@@ -7,26 +7,26 @@ import requests
 from getDate import get_date
 import personal
 
-def update_Chess(wb):
+def update_Chess(cur):
+    # Pull and load JSON data
     chessUrl = "https://api.chess.com/pub/player/{}/stats".format(personal.data["chessUsername"])
     chessResponse = requests.get(chessUrl)
     chessResponse.raise_for_status()
     chessData = json.loads(chessResponse.text)
     
-    chessSheet = wb.get_sheet_by_name("Chess")
-    newRow = chessSheet.max_row + 1
+    # Select most recent entry
+    cur.execute("SELECT Date FROM chess ORDER BY Date DESC LIMIT 1")
+    last_entry = cur.fetchone()
     
+    # If last entry is not today, add new data. Else skip.
     today = get_date()
-    if not chessSheet["A{}".format(newRow-1)].value == today:
-        chessSheet["A{}".format(newRow)] = today
-        chessSheet["B{}".format(newRow)] = chessData["chess_daily"]["last"]["rating"]
-        chessSheet["C{}".format(newRow)] = chessData["chess960_daily"]["last"]["rating"]
-        chessSheet["D{}".format(newRow)] = chessData["chess_rapid"]["last"]["rating"]
-        chessSheet["E{}".format(newRow)] = chessData["chess_bullet"]["last"]["rating"]
-        chessSheet["F{}".format(newRow)] = chessData["chess_blitz"]["last"]["rating"]
-        print("Updated chess ratings.")
+    if today != last_entry[0]:
+        sql = ''' INSERT INTO chess(Date, Daily, Daily960, Rapid, Bullet, Blitz) VALUES (?,?,?,?,?,?)'''
+        new_entry = [today, chessData["chess_daily"]["last"]["rating"], chessData["chess960_daily"]["last"]["rating"], chessData["chess_rapid"]["last"]["rating"], chessData["chess_bullet"]["last"]["rating"], chessData["chess_blitz"]["last"]["rating"]]
+        cur.execute(sql, new_entry[0:6])
+        print("New data added to Chess.")
     else:
-        print("Chess already has ratings for today.")
+        print("Chess was already updated today.")
     
-    return wb
+    return cur
     

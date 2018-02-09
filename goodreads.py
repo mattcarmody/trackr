@@ -7,8 +7,8 @@ import requests
 from getDate import get_date
 import personal
 
-def update_Goodreads(wb):
-    
+def update_Goodreads(cur):
+    # Scrape and parse using Beautiful Soup
     bsUrl = "https://www.goodreads.com/review/list/{}?shelf={}".format(personal.data["grUserID"], personal.data["grShelf"])
     res = requests.get(bsUrl)
     res.raise_for_status()
@@ -18,15 +18,19 @@ def update_Goodreads(wb):
     for row in booksTable.findAll("tr"):
         count += 1
     
-    grSheet = wb.get_sheet_by_name("Goodreads")
-    newRow = grSheet.max_row + 1
+    # Select most recent entry
+    cur.execute("SELECT Date FROM goodreads ORDER BY Date DESC LIMIT 1")
+    last_entry = cur.fetchone()
     
+    # If last entry is not today, add new data. Else skip.
     today = get_date()
-    if not grSheet["A{}".format(newRow-1)].value == today:
-        grSheet["A{}".format(newRow)] = today
-        grSheet["B{}".format(newRow)] = count
-        print("Updated Goodreads.")
+    if today != last_entry[0]:
+        sql = ''' INSERT INTO goodreads(Date, Count) VALUES (?,?)'''
+        new_entry = [today, count]
+        cur.execute(sql, new_entry[0:2])
+        print("New data added to Goodreads.")
     else:
-        print("Goodreads has already been updated today.")
+        print("Goodreads was already updated today.")
     
-    return wb
+    return cur
+    

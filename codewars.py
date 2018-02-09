@@ -7,23 +7,26 @@ import requests
 from getDate import get_date
 import personal
 
-def update_Codewars(wb):
+def update_Codewars(cur):
+    # Pull and load JSON data
     cwUrl = "https://www.codewars.com/api/v1/users/{}".format(personal.data["cwUsername"])
     cwResponse = requests.get(cwUrl, auth=("?access_key", personal.data["cwAccessKey"]))
     cwResponse.raise_for_status()
     cwData = json.loads(cwResponse.text)
     
-    cwSheet = wb.get_sheet_by_name("Codewars")
-    newRow = cwSheet.max_row + 1
+    # Select most recent entry
+    cur.execute("SELECT Date FROM codewars ORDER BY Date DESC LIMIT 1")
+    last_entry = cur.fetchone()
     
+    # If last entry is not today, add new data. Else skip.
     today = get_date()
-    if not cwSheet["A{}".format(newRow-1)].value == today:
-        cwSheet["A{}".format(newRow)] = today
-        cwSheet["B{}".format(newRow)] = cwData["honor"]
-        cwSheet["C{}".format(newRow)] = cwData["ranks"]["overall"]["score"]
-        cwSheet["D{}".format(newRow)] = cwData["codeChallenges"]["totalCompleted"]
-        print("Updated codewars.")
+    if today != last_entry[0]:
+        sql = ''' INSERT INTO codewars(Date, Honor, Points, Challenges) VALUES (?,?,?,?)'''
+        new_entry = [today, cwData["honor"], cwData["ranks"]["overall"]["score"], cwData["codeChallenges"]["totalCompleted"]]
+        cur.execute(sql, new_entry[0:4])
+        print("New data added to Codewars.")
     else:
-        print("Codewars already has data for today.")
+        print("Codewars was already updated today.")
     
-    return wb
+    return cur
+    
