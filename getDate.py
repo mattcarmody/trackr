@@ -5,5 +5,5 @@
 import datetime
 
 def get_date():
-    today = "=DATE({})".format(datetime.date.today().strftime("%Y,%-m,%-d"))
+    today = datetime.date.today().strftime("%m/%d/%y")
     return today

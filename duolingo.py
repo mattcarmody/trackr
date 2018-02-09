@@ -2,23 +2,37 @@
 # Requires a username in personal.data
 
 import json
-import openpyxl
 import requests
+import sqlite3
 
 from getDate import get_date
 import personal
 
-def update_Duolingo(wb):
-    
+def update_Duolingo(cur):    
     duoUrl = "https://www.duolingo.com/users/{}".format(personal.data["duoUsername"])
     duoResponse = requests.get(duoUrl)
     duoResponse.raise_for_status()
     duoData = json.loads(duoResponse.text)
     
+    today = get_date()
+    sql = ''' INSERT INTO duolingo(Date, Greek, Esperanto, Vietnamese, Italian, Welsh, Irish, Czech, Spanish, Chinese, Russian, Portuguese, Norwegian, Turkish, Romanian, Polish, Dutch, French, German, HighValyrian, Korean, Danish, Hungarian, Japanese, Hebrew, Swahili, Swedish, Ukrainian) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'''
+    new_entry = [today]
+    for i in range(len(duoData["languages"])):
+        new_entry.append(duoData["languages"][i]["points"])
+    
+    cur.execute("SELECT Date FROM duolingo ORDER BY Date DESC LIMIT 1")
+    result = cur.fetchone()
+    
+    if today != result[0]:
+        cur.execute(sql, new_entry[0:28])
+        print("New data added to Duolingo.")
+    else:
+        print("Duolingo was already updated today.")
+    
+    '''    
     duoSheet = wb.get_sheet_by_name("Duolingo")
     newRow = duoSheet.max_row + 1
     
-    today = get_date()
     if not duoSheet["A{}".format(newRow-1)].value == today:
         duoSheet["A{}".format(newRow)] = today
         for i in range(len(duoData["languages"])):
@@ -26,5 +40,5 @@ def update_Duolingo(wb):
         print("Updated Duolingo.")
     else:
         print("Duolingo was already updated today.")
-        
-    return wb
+    '''
+    return cur
