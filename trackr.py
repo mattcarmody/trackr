@@ -15,10 +15,15 @@ import duolingoVisuals
 
 import personal
 
+# bifort 1: Jan 1 - Jan 28 (because Jan 1 is a Monday)
+BIFORT_START = 1
+REVIEW_DOW = 0
+
 def main():
     conn = sqlite3.connect("trackr.db")
     with conn:     
         cur = conn.cursor()
+        
         try:
             cur = update_Duolingo(cur)
         except:
@@ -55,14 +60,17 @@ def main():
             if today.month % 3 == 0 and today.day == 1:
                 # Quarterly stuff here
                 pass
+            
+            #day_of_year = datetime.date.today().timetuple().tm_yday
+            day_of_year = 29
+            print(day_of_year)
                 
-            # Monthly
-            if today.day == 1:
-                # Monthly stuff here
-                pass
+            # Bifortly
+            if today.weekday() == REVIEW_DOW and ((day_of_year - BIFORT_START) // 7) % 4 == 0:
+                duolingoVisuals.duolingo_bifortly_visuals(cur)
                 
             # Weekly
-            if datetime.date.today().weekday() == 0:
+            if today.weekday() == REVIEW_DOW:
                 duolingoVisuals.duolingo_weekly_visuals(cur)
     
 if __name__ == "__main__":
