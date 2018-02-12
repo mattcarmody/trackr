@@ -51,19 +51,18 @@ def main():
         
         if len(sys.argv) > 1:
             today = datetime.date.today()
+            #day_of_year = datetime.date.today().timetuple().tm_yday
+            day_of_year = 29
+            
             # Annual
             if today.day == 1 and today.month == 1:
                 # Annual stuff here
                 pass
-                
+
             # Quarterly
             if today.month % 3 == 0 and today.day == 1:
                 # Quarterly stuff here
                 pass
-            
-            #day_of_year = datetime.date.today().timetuple().tm_yday
-            day_of_year = 29
-            print(day_of_year)
                 
             # Bifortly
             if today.weekday() == REVIEW_DOW and ((day_of_year - BIFORT_START) // 7) % 4 == 0:
