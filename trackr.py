@@ -1,7 +1,9 @@
 #!/usr/bin/python3
 # trackr.py - Automate record keeping for sites I frequent.
 
+import datetime
 import sqlite3
+import sys
 
 from hackerRank import update_HackerRank
 from duolingo import update_Duolingo
@@ -9,6 +11,7 @@ from codewars import update_Codewars
 from chess import update_Chess
 from goodreads import update_Goodreads
 import pullFromEmail
+import duolingoVisuals
 
 import personal
 
@@ -40,6 +43,28 @@ def main():
             cur = pullFromEmail.update_Email(cur)
         except:
             print("Email update failed...")
+        
+        if len(sys.argv) > 1:
+            today = datetime.date.today()
+            # Annual
+            if today.day == 1 and today.month == 1:
+                # Annual stuff here
+                pass
+                
+            # Quarterly
+            if today.month % 3 == 0 and today.day == 1:
+                # Quarterly stuff here
+                pass
+                
+            # Monthly
+            if today.day == 1:
+                # Monthly stuff here
+                pass
+                
+            # Weekly
+            if datetime.date.today().weekday() == 0:
+                duolingoVisuals.duolingo_weekly_visuals(cur)
     
 if __name__ == "__main__":
     main()
+    
