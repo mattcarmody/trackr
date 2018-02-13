@@ -49,20 +49,9 @@ def main():
         except:
             print("Email update failed...")
         
-        if len(sys.argv) > 1:
+        try:
             today = datetime.date.today()
-            #day_of_year = datetime.date.today().timetuple().tm_yday
-            day_of_year = 29
-            
-            # Annual
-            if today.day == 1 and today.month == 1:
-                # Annual calls here
-                pass
-
-            # Quarterly
-            if today.month % 3 == 0 and today.day == 1:
-                # Quarterly calls here
-                pass
+            day_of_year = datetime.date.today().timetuple().tm_yday
                 
             # Bifortly
             if today.weekday() == REVIEW_DOW and ((day_of_year - BIFORT_START) // 7) % 4 == 0:
@@ -71,6 +60,8 @@ def main():
             # Weekly
             if today.weekday() == REVIEW_DOW:
                 duolingoVisuals.duolingo_weekly_visuals(cur)
+        except:
+            print("Visualizations failed...")
     
 if __name__ == "__main__":
     main()
