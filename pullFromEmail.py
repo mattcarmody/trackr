@@ -15,6 +15,8 @@ SECRET_PASSWORD = personal.data["trackrEmailPassword"]
 PERSONAL_EMAIL_ADDRESS = personal.data["Email"]
 FOLDER = 'INBOX'
 METRIC_COLUMN_DICT = personal.bodyDict
+DEF_COL = 10
+DEF_COL_NAME = "Uncategorized"
 
 # Changes "one" or "1" to 1, Borrowed from stack overflow with minor changes
 def text2int(textnum, numwords={}):
@@ -84,6 +86,8 @@ def update_Email(cur):
                 words[i] = "{} {}".format(words[i], words[i+1])
                 del words[i+1]   
 
+        # Choose db based on subject body/work
+        print(message.get_subject())
         
         # Call relevant db row for the email date
         date = message['Date']
@@ -96,8 +100,9 @@ def update_Email(cur):
             if type(words[i]) != str:
                 print("Oh no! I was expecting a str, not {}".format(type(words[i])))
                 break
-            keyword = "uncategorized"
             for key in METRIC_COLUMN_DICT:
+                col = DEF_COL
+                col_name = DEF_COL_NAME
                 if key in words[i].lower():
                     col = METRIC_COLUMN_DICT[key][0]
                     col_name = METRIC_COLUMN_DICT[key][1]

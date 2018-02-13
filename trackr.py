@@ -40,6 +40,6 @@ def main():
             cur = pullFromEmail.update_Email(cur)
         except:
             print("Email update failed...")
-    
+
 if __name__ == "__main__":
     main()
