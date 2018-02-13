@@ -17,7 +17,7 @@ import personal
 
 # bifort 1: Jan 1 - Jan 28 (because Jan 1 is a Monday)
 BIFORT_START = 1
-REVIEW_DOW = 0
+REVIEW_DOW = 6
 
 def main():
     conn = sqlite3.connect("trackr.db")
@@ -56,12 +56,12 @@ def main():
             
             # Annual
             if today.day == 1 and today.month == 1:
-                # Annual stuff here
+                # Annual calls here
                 pass
 
             # Quarterly
             if today.month % 3 == 0 and today.day == 1:
-                # Quarterly stuff here
+                # Quarterly calls here
                 pass
                 
             # Bifortly

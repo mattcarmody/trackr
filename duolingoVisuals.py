@@ -32,18 +32,20 @@ def duolingo_bifortly_visuals(cur):
         bifort_Spanish[i] -= start_Spanish
     
     # Stackplot w/ target line
-    fig, ax = plt.subplots()
+    plt.figure(1)
+    plt.subplot()
     labels = ["Esperanto", "Spanish", "Portuguese"]
     colors = ['g', 'r', 'y']
-    ax.stackplot(bifort_Date, bifort_Esperanto, bifort_Spanish, bifort_Portuguese, labels=labels, colors=colors)
-    ax.legend(loc=2)
+    plt.stackplot(bifort_Date, bifort_Esperanto, bifort_Spanish, bifort_Portuguese, labels=labels, colors=colors)
+    plt.legend(loc=2)
+    ax = plt.gca()
     ax.set_xticks([0,7,14,21])
     ax.set_xticklabels(bifort_Date[-1::-7])
     plt.xlabel("Date")
     plt.ylabel("Total Points")
     plt.title("Duolingo this Bifort")
     plt.plot([0, 27], [DUO_BIFORT_TARGET/28, DUO_BIFORT_TARGET], 'k-', lw=1)
-    plt.show()
+    plt.show(block=False)
 
 def duolingo_weekly_visuals(cur):
     DUO_WEEKLY_TARGET = 300
@@ -73,11 +75,12 @@ def duolingo_weekly_visuals(cur):
         week_Spanish[i] -= start_Spanish
     
     # Stackplot w/ target line
-    fig, ax = plt.subplots()
+    plt.figure(2)
+    plt.subplot()
     labels = ["Esperanto", "Spanish", "Portuguese"]
     colors = ['g', 'r', 'y']
-    ax.stackplot(week_Date, week_Esperanto, week_Spanish, week_Portuguese, labels=labels, colors=colors)
-    ax.legend(loc=2)
+    plt.stackplot(week_Date, week_Esperanto, week_Spanish, week_Portuguese, labels=labels, colors=colors)
+    plt.legend(loc=2)
     plt.xlabel("Date")
     plt.ylabel("Total Points")
     plt.title("Duolingo this Week")
