@@ -87,12 +87,18 @@ def update_Email(cur):
                 del words[i+1]   
 
         # Choose db based on subject body/work
-        print(message.get_subject())
-        
+        if "body" in message.get_subject().lower():
+            table = "body"
+        elif "work" in message.get_subject().lower():
+            table = "deepWork"
+        else:
+            print("I don't know which table to use for this email subject: {}".format(message.get_subject()))
+            continue
+            
         # Call relevant db row for the email date
         date = message['Date']
         pDate = datetime.datetime.strptime(date , '%a, %d %b %Y %X %z').strftime('%m/%d/%y')
-        cur.execute('SELECT * FROM body WHERE Date = ?', (pDate,))
+        cur.execute('SELECT * FROM \"{}\" WHERE Date = \"{}\"'.format(table, pDate))
         rel_entry = cur.fetchone()
         
         # Update relevant value for each keyword/number pair
@@ -106,11 +112,12 @@ def update_Email(cur):
                 if key in words[i].lower():
                     col = METRIC_COLUMN_DICT[key][0]
                     col_name = METRIC_COLUMN_DICT[key][1]
-                    
+                    break
+                   
             new_value = rel_entry[col] + words[i+1]
-            cur.execute('UPDATE body SET {} = {} WHERE Date = \"{}\"'.format(col_name, new_value, pDate))
-            print("Adding {} to body's {}.".format(words[i+1], col_name))
-        
+            cur.execute('UPDATE {} SET {} = {} WHERE Date = \"{}\"'.format(table, col_name, new_value, pDate))
+            print("Adding {} to {}'s {}.".format(words[i+1], table, col_name))
+
     print("Update from email complete.")
     imapObj.logout()
     return cur
