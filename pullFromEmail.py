@@ -97,7 +97,7 @@ def update_Email(cur):
             
         # Call relevant db row for the email date
         date = message['Date']
-        pDate = datetime.datetime.strptime(date , '%a, %d %b %Y %X %z').strftime('%m/%d/%y')
+        pDate = datetime.datetime.strptime(date , '%a, %d %b %Y %X %z').strftime('%Y-%m-%d')
         cur.execute('SELECT * FROM \"{}\" WHERE Date = \"{}\"'.format(table, pDate))
         rel_entry = cur.fetchone()
         

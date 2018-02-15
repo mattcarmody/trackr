@@ -12,6 +12,7 @@ from chess import update_Chess
 from goodreads import update_Goodreads
 import pullFromEmail
 import duolingoVisuals
+from trackWarmUp import update_warmup
 
 import personal
 
@@ -48,7 +49,6 @@ def main():
             cur = pullFromEmail.update_Email(cur)
         except:
             print("Email update failed...")
-        
         try:
             today = datetime.date.today()
             day_of_year = datetime.date.today().timetuple().tm_yday
@@ -62,7 +62,7 @@ def main():
                 duolingoVisuals.duolingo_weekly_visuals(cur)
         except:
             print("Visualizations failed...")
-
+        
 if __name__ == "__main__":
     main()
     
