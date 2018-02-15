@@ -62,7 +62,10 @@ def main():
                 duolingoVisuals.duolingo_weekly_visuals(cur)
         except:
             print("Visualizations failed...")
-        
+        try:
+            cur = update_warmup(cur)
+        except:
+            print("There was a problem updating warmup.")
 if __name__ == "__main__":
     main()
     
