@@ -11,8 +11,10 @@ from codewars import update_Codewars
 from chess import update_Chess
 from goodreads import update_Goodreads
 import pullFromEmail
-import duolingoVisuals
 from trackWarmUp import update_warmup
+
+import duolingoVisuals
+import deepWorkVisuals
 
 import personal
 
@@ -50,6 +52,10 @@ def main():
         except:
             print("Email update failed...")
         try:
+            cur = update_warmup(cur)
+        except:
+            print("There was a problem updating warmup.")
+        try:
             today = datetime.date.today()
             day_of_year = datetime.date.today().timetuple().tm_yday
                 
@@ -60,12 +66,10 @@ def main():
             # Weekly
             if today.weekday() == REVIEW_DOW:
                 duolingoVisuals.duolingo_weekly_visuals(cur)
+                deepWorkVisuals.deepWork_weekly_visuals(cur)
         except:
             print("Visualizations failed...")
-        try:
-            cur = update_warmup(cur)
-        except:
-            print("There was a problem updating warmup.")
+           
 if __name__ == "__main__":
     main()
     
