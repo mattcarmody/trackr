@@ -1,29 +1,33 @@
 import matplotlib.pyplot as plt
 import matplotlib.ticker as plticker
 
+from getDate import get_date
+
 def deepWork_weekly_visuals(cur):
     DEEP_WORK_TARGET = 15
     week_Date = []
     week_Prog = []
     week_Web = []
     
-    # Pull week's db data 
-    # TODO: Pull the right data after the first week
-    cur.execute("SELECT * FROM deepWork ORDER BY Date ASC LIMIT 7")
-    raw_data = cur.fetchall()
+    # Set dates for the previous week
+    for i in range(7, 0, -1):
+        week_Date.append(get_date(i))
     
-    for i in range(len(raw_data)):
-        week_Date.append(raw_data[i][0])
-        week_Prog.append(raw_data[i][1])
-        week_Web.append(raw_data[i][2])
-        
-    # Use first day as 0 point
+    # Pull db data for those dates
+    for date in week_Date:
+        cur.execute("SELECT Programming, WebDevelopment FROM deepWork WHERE Date = ?", (date,))
+        raw_data = cur.fetchone()
+        week_Prog.append(raw_data[0])
+        week_Web.append(raw_data[1])
+    
+    # Sum over the week    
     sum_Prog = [week_Prog.pop(0)]
     sum_Web = [week_Web.pop(0)]
     for i in range(len(week_Prog)):
         sum_Prog.append(sum_Prog[i] + week_Prog[i])
         sum_Web.append(sum_Web[i] + week_Web[i])
     
+    # Create stackplot
     plt.figure(3)
     plt.subplot()
     labels = ["Programming", "Web Development"]

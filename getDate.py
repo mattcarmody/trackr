@@ -4,6 +4,6 @@
 
 import datetime
 
-def get_date():
-    today = datetime.date.today().strftime("%Y-%m-%d")
-    return today
+def get_date(offset_days=0):
+    day = (datetime.date.today() - datetime.timedelta(days=offset_days)).strftime("%Y-%m-%d")
+    return day
