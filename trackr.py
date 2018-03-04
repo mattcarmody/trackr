@@ -60,7 +60,7 @@ def main():
             day_of_year = datetime.date.today().timetuple().tm_yday
                 
             # Bifortly
-            if today.weekday() == REVIEW_DOW and ((day_of_year - BIFORT_START) // 7) % 4 == 0:
+            if today.weekday() == REVIEW_DOW and ((day_of_year - BIFORT_START + 1) // 7) % 4 == 0:
                 duolingoVisuals.duolingo_bifortly_visuals(cur)
                 
             # Weekly
@@ -69,7 +69,7 @@ def main():
                 deepWorkVisuals.deepWork_weekly_visuals(cur)
         except:
             print("Visualizations failed...")
-
+        
 if __name__ == "__main__":
     main()
     
