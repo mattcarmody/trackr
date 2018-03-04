@@ -28,13 +28,13 @@ def update_HackerRank(cur):
 
     # Navigate through pages of history
     data = []
-    for page in range(1, 4):
+    for page in range(1, 7):
         hackosUrl = "https://www.hackerrank.com/{}/hackos/page/{}".format(personal.data["hrUsername"], page)
         browser.get(hackosUrl)
         
         # Often has a 404 error, but refreshing helps
         count = 0
-        while count < 15:
+        while count < 5:
             innerHTML = browser.execute_script("return document.body.innerHTML")
             bsSoup = bs4.BeautifulSoup(innerHTML, "lxml")
             try:
@@ -44,6 +44,13 @@ def update_HackerRank(cur):
             except:
                 count += 1
                 browser.refresh()
+        
+        # Close if it is still on 404
+        if not h3:
+            browser.quit()
+            print("HackerRank - 404.")
+            return cur
+        
         # Extract Total Hackos count from first page
         if page == 1:
             hackosRegex = re.compile(r"Total Hackos: (\d*)")
