@@ -69,7 +69,7 @@ def main():
                 deepWorkVisuals.deepWork_weekly_visuals(cur)
         except:
             print("Visualizations failed...")
-           
+
 if __name__ == "__main__":
     main()
     

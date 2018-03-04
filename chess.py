@@ -22,7 +22,7 @@ def update_Chess(cur):
     today = get_date()
     if today != last_entry[0]:
         sql = ''' INSERT INTO chess(Date, Daily, Daily960, Rapid, Bullet, Blitz) VALUES (?,?,?,?,?,?)'''
-        new_entry = [today, chessData["chess_daily"]["last"]["rating"], chessData["chess960_daily"]["last"]["rating"], chessData["chess_rapid"]["last"]["rating"], chessData["chess_bullet"]["last"]["rating"], chessData["chess_blitz"]["last"]["rating"]]
+        new_entry = [today, chessData["chess_daily"]["last"]["rating"], 0, chessData["chess_rapid"]["last"]["rating"], chessData["chess_bullet"]["last"]["rating"], chessData["chess_blitz"]["last"]["rating"]]
         cur.execute(sql, new_entry[0:6])
         print("New data added to Chess.")
     else:
