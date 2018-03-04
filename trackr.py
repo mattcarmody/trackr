@@ -43,10 +43,10 @@ def main():
             cur = update_Goodreads(cur)
         except:
             print("Goodreads failed...")
-        try:
-            cur = update_HackerRank(cur)
-        except:
-            print("HackerRank failed...")
+        #try:
+        #    cur = update_HackerRank(cur)
+        #except:
+        #    print("HackerRank failed...")
         try:
             cur = pullFromEmail.update_Email(cur)
         except:
