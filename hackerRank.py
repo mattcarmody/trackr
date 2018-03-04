@@ -26,9 +26,14 @@ def update_HackerRank(cur):
     password.send_keys(personal.data["hrPassword"])
     password.send_keys(Keys.RETURN)
 
+    #Estimate number of pages in HackerRank table
+    cur.execute("SELECT Count(*) FROM hackerRankItems")
+    items = cur.fetchone()
+    maxPage = items[0] // 10 + 2
+    
     # Navigate through pages of history
     data = []
-    for page in range(1, 7):
+    for page in range(1, maxPage):
         hackosUrl = "https://www.hackerrank.com/{}/hackos/page/{}".format(personal.data["hrUsername"], page)
         browser.get(hackosUrl)
         
