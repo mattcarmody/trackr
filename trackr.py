@@ -48,7 +48,7 @@ def main():
         #except:
         #    print("HackerRank failed...")
         try:
-            cur = pullFromEmail.update_Email(cur)
+            cur = pullFromEmail.update_email(cur)
         except:
             print("Email update failed...")
         try:

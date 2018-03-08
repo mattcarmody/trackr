@@ -14,7 +14,7 @@ TRACKR_EMAIL_ADDRESS = personal.data["trackrEmail"]
 SECRET_PASSWORD = personal.data["trackrEmailPassword"]
 PERSONAL_EMAIL_ADDRESS = personal.data["Email"]
 FOLDER = 'INBOX'
-METRIC_COLUMN_DICT = personal.bodyDict
+METRIC_COLUMN_DICT = personal.emailDict
 DEF_COL = 10
 DEF_COL_NAME = "Uncategorized"
 
@@ -48,16 +48,16 @@ def text2int(textnum, numwords={}):
             current = 0
     return result + current
 
-def update_Email(cur):    
+def update_email(cur):    
     # Connect to dedicated email account and fetch relevant, unopened emails
-    imapObj = imapclient.IMAPClient('imap.gmail.com', ssl=True)
-    imapObj.login(TRACKR_EMAIL_ADDRESS, SECRET_PASSWORD)
-    imapObj.select_folder(FOLDER, readonly=False)
-    UIDs = imapObj.search(['FROM', PERSONAL_EMAIL_ADDRESS, 'UNSEEN'])
-    rawMessages = imapObj.fetch(UIDs, ['BODY[]'])
+    imap_obj = imapclient.IMAPClient('imap.gmail.com', ssl=True)
+    imap_obj.login(TRACKR_EMAIL_ADDRESS, SECRET_PASSWORD)
+    imap_obj.select_folder(FOLDER, readonly=False)
+    UIDs = imap_obj.search(['FROM', PERSONAL_EMAIL_ADDRESS, 'UNSEEN'])
+    raw_messages = imap_obj.fetch(UIDs, ['BODY[]'])
     
     for i in range(len(UIDs)): # For each email
-        message = pyzmail.PyzMessage.factory(rawMessages[UIDs[i]][b'BODY[]'])    
+        message = pyzmail.PyzMessage.factory(raw_messages[UIDs[i]][b'BODY[]'])    
         # Verify that it is a text body as expected, not HTML
         if message.text_part != None:
             body = message.text_part.get_payload().decode(message.text_part.charset)
@@ -81,6 +81,7 @@ def update_Email(cur):
                     pass
         
         # Combine multi-word keywords (string items alongside one another)
+        # Work back from end to prevent skips and handle 3+ words
         for i in range(len(words)-2, -1, -1):
             if type(words[i]) == str and type(words[i+1]) == str:
                 words[i] = "{} {}".format(words[i], words[i+1])
@@ -92,13 +93,13 @@ def update_Email(cur):
         elif "work" in message.get_subject().lower():
             table = "deepWork"
         else:
-            print("I don't know which table to use for this email subject: {}".format(message.get_subject()))
+            print("I don't know which table to use for this email subject: {} (so I'm skipping it)".format(message.get_subject()))
             continue
             
         # Call relevant db row for the email date
         date = message['Date']
-        pDate = datetime.datetime.strptime(date , '%a, %d %b %Y %X %z').strftime('%Y-%m-%d')
-        cur.execute('SELECT * FROM \"{}\" WHERE Date = \"{}\"'.format(table, pDate))
+        pars_date = datetime.datetime.strptime(date, '%a, %d %b %Y %X %z').strftime('%Y-%m-%d')
+        cur.execute('SELECT * FROM \"{}\" WHERE Date = \"{}\"'.format(table, pars_date))
         rel_entry = cur.fetchone()
         
         # Update relevant value for each keyword/number pair
@@ -115,10 +116,10 @@ def update_Email(cur):
                     break
                    
             new_value = rel_entry[col] + words[i+1]
-            cur.execute('UPDATE {} SET {} = {} WHERE Date = \"{}\"'.format(table, col_name, new_value, pDate))
+            cur.execute('UPDATE {} SET {} = {} WHERE Date = \"{}\"'.format(table, col_name, new_value, pars_date))
             print("Adding {} to {}'s {}.".format(words[i+1], table, col_name))
 
     print("Update from email complete.")
-    imapObj.logout()
+    imap_obj.logout()
     return cur
     
