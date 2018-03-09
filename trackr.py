@@ -2,8 +2,11 @@
 # trackr.py - Automate record keeping for sites I frequent.
 
 import datetime
+import logging
+logging.basicConfig(filename='trackr_log.txt', level=logging.DEBUG, format=' %(asctime)s - %(levelname)s - %(message)s')
 import sqlite3
 import sys
+import traceback
 
 from hackerRank import update_HackerRank
 from duolingo import update_Duolingo
@@ -23,6 +26,7 @@ BIFORT_START = 1
 REVIEW_DOW = 6
 
 def main():
+    logging.debug("Start main.")
     conn = sqlite3.connect("trackr.db")
     with conn:     
         cur = conn.cursor()
@@ -30,30 +34,44 @@ def main():
         try:
             cur = update_Duolingo(cur)
         except:
+            with open("trackr_log.txt", "a") as error_file:
+                error_file.write(traceback.format_exc())
             print("Duolingo failed...")
         try:
             cur = update_Codewars(cur)
         except:
+            with open("trackr_log.txt", "a") as error_file:
+                error_file.write(traceback.format_exc())
             print("Codewars failed...")
         try:
             cur = update_Chess(cur)
         except:
+            with open("trackr_log.txt", "a") as error_file:
+                error_file.write(traceback.format_exc())
             print("Chess failed...")
         try:
             cur = update_Goodreads(cur)
         except:
+            with open("trackr_log.txt", "a") as error_file:
+                error_file.write(traceback.format_exc())
             print("Goodreads failed...")
         #try:
         #    cur = update_HackerRank(cur)
         #except:
-        #    print("HackerRank failed...")
+            #with open("trackr_log.txt", "a") as error_file:
+                #error_file.write(traceback.format_exc())    
+            #print("HackerRank failed...")
         try:
             cur = pullFromEmail.update_email(cur)
         except:
+            with open("trackr_log.txt", "a") as error_file:
+                error_file.write(traceback.format_exc())
             print("Email update failed...")
         try:
             cur = update_warmup(cur)
         except:
+            with open("trackr_log.txt", "a") as error_file:
+                error_file.write(traceback.format_exc())
             print("There was a problem updating warmup.")
         try:
             today = datetime.date.today()
@@ -68,7 +86,10 @@ def main():
                 duolingoVisuals.duolingo_weekly_visuals(cur)
                 deepWorkVisuals.deepWork_weekly_visuals(cur)
         except:
+            with open("trackr_log.txt", "a") as error_file:
+                error_file.write(traceback.format_exc())
             print("Visualizations failed...")
+    logging.debug("Finish main.")
         
 if __name__ == "__main__":
     main()
