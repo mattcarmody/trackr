@@ -19,8 +19,8 @@ DEF_COL = 10
 DEF_COL_NAME = "Uncategorized"
 
 # Changes "one" or "1" to 1, Borrowed from stack overflow with minor changes
-def text2int(textnum, numwords={}):
-    if not numwords:
+def text_to_int(num_text, num_words={}):
+    if not num_words:
         units = [
             "zero", "one", "two", "three", "four", "five", "six", "seven", 
             "eight", "nine", "ten", "eleven", "twelve", "thirteen", 
@@ -30,18 +30,18 @@ def text2int(textnum, numwords={}):
                 "seventy", "eighty", "ninety"]
         scales = ["hundred", "thousand"]
 
-        for idx, word in enumerate(units):
-            numwords[word] = (1, idx)
-        for idx, word in enumerate(tens):
-            numwords[word] = (1, idx * 10)
-        for idx, word in enumerate(scales):
-            numwords[word] = (10 ** (idx * 3 or 2), 0)
+        for i, word in enumerate(units):
+            num_words[word] = (1, i)
+        for i, word in enumerate(tens):
+            num_words[word] = (1, i * 10)
+        for i, word in enumerate(scales):
+            num_words[word] = (10 ** (i * 3 or 2), 0)
 
     current = result = 0
-    for word in textnum.split():
-        if word not in numwords:
+    for word in num_text.split():
+        if word not in num_words:
             raise Exception("Illegal word: {}".format(word))
-        scale, increment = numwords[word]
+        scale, increment = num_words[word]
         current = current * scale + increment
         if scale > 100:
             result += current
@@ -73,7 +73,7 @@ def update_email(cur):
         words = body.split()
         for i, word in enumerate(words):
             try:
-                words[i] = text2int(word)
+                words[i] = text_to_int(word)
             except:
                 try:
                     words[i] = int(word)
@@ -117,7 +117,7 @@ def update_email(cur):
                    
             new_value = rel_entry[col] + words[i+1]
             cur.execute('UPDATE {} SET {} = {} WHERE Date = \"{}\"'.format(table, col_name, new_value, pars_date))
-            print("Adding {} to {}'s {}.".format(words[i+1], table, col_name))
+            print("Adding {} to {}'s {} on {}.".format(words[i+1], table, col_name, pars_date))
 
     print("Update from email complete.")
     imap_obj.logout()
