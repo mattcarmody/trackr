@@ -28,7 +28,7 @@ def deepWork_weekly_visuals(cur):
         sum_Web.append(sum_Web[i] + week_Web[i])
     
     # Create stackplot
-    plt.figure(3)
+    plt.figure(3, figsize=(20,10))
     plt.subplot()
     labels = ["Programming", "Web Development"]
     colors = ['m', 'b']

@@ -21,7 +21,7 @@ import deepWorkVisuals
 
 import personal
 
-# bifort 1: Jan 1 - Jan 28 (because Jan 1 is a Monday)
+# Bifort 1: Jan 1 - Jan 28. Jan 1 is a Monday
 BIFORT_START = 1
 REVIEW_DOW = 6
 

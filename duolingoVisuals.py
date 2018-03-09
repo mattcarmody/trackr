@@ -32,7 +32,7 @@ def duolingo_bifortly_visuals(cur):
         bifort_Spanish[i] -= start_Spanish
     
     # Stackplot w/ target line
-    plt.figure(1)
+    plt.figure(1, figsize=(20,10))
     plt.subplot()
     labels = ["Esperanto", "Spanish", "Portuguese"]
     colors = ['g', 'r', 'y']
@@ -75,7 +75,7 @@ def duolingo_weekly_visuals(cur):
         week_Spanish[i] -= start_Spanish
     
     # Stackplot w/ target line
-    plt.figure(2)
+    plt.figure(2, figsize=(20,10))
     plt.subplot()
     labels = ["Esperanto", "Spanish", "Portuguese"]
     colors = ['g', 'r', 'y']
