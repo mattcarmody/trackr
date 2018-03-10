@@ -16,6 +16,7 @@ from goodreads import update_Goodreads
 import pullFromEmail
 from trackWarmUp import update_warmup
 
+import bodyVisuals
 import duolingoVisuals
 import deepWorkVisuals
 
@@ -82,9 +83,13 @@ def main():
                 duolingoVisuals.duolingo_bifortly_visuals(cur)
                 
             # Weekly
-            if today.weekday() == REVIEW_DOW:
-                duolingoVisuals.duolingo_weekly_visuals(cur)
-                deepWorkVisuals.deepWork_weekly_visuals(cur)
+            #if today.weekday() == REVIEW_DOW:
+            
+            # Daily
+            if True:
+                #duolingoVisuals.duolingo_weekly_visuals(cur)
+                bodyVisuals.body_week_visuals(cur)
+                deepWorkVisuals.deepWork_week_visuals(cur)
         except:
             with open("trackr_log.txt", "a") as error_file:
                 error_file.write(traceback.format_exc())
