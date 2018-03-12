@@ -1,5 +1,6 @@
 #!/usr/bin/python3
-# trackr.py - Automate record keeping for sites I frequent.
+# trackr.py - Automate record keeping for sites I frequent and provide
+# manager part of myself with tracking of the worker part of myself.
 
 import datetime
 import logging
@@ -13,12 +14,12 @@ from duolingo import update_Duolingo
 from codewars import update_Codewars
 from chess import update_Chess
 from goodreads import update_Goodreads
-import pullFromEmail
+from pullFromEmail import update_email
 from trackWarmUp import update_warmup
 
-import bodyVisuals
-import duolingoVisuals
-import deepWorkVisuals
+import visuals_Body
+import visuals_Duolingo
+import visuals_Deep_Work
 
 import personal
 
@@ -63,7 +64,7 @@ def main():
                 #error_file.write(traceback.format_exc())    
             #print("HackerRank failed...")
         try:
-            cur = pullFromEmail.update_email(cur)
+            cur = update_email(cur)
         except:
             with open("trackr_log.txt", "a") as error_file:
                 error_file.write(traceback.format_exc())
@@ -87,9 +88,9 @@ def main():
             
             # Daily
             if True:
-                #duolingoVisuals.duolingo_weekly_visuals(cur)
-                bodyVisuals.body_week_visuals(cur)
-                deepWorkVisuals.deepWork_week_visuals(cur)
+                #visuals_Duolingo.duolingo_weekly_visuals(cur)
+                visuals_Body.body_week_visuals(cur)
+                visuals_Deep_Work.deepWork_week_visuals(cur)
         except:
             with open("trackr_log.txt", "a") as error_file:
                 error_file.write(traceback.format_exc())
