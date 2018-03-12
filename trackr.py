@@ -17,9 +17,9 @@ from goodreads import update_goodreads
 from my_email import update_my_email
 from track_warmup import update_track_warmup
 
-import visuals_Body
-import visuals_Duolingo
-import visuals_Deep_Work
+import visuals_body
+import visuals_duolingo
+import visuals_deepwork
 
 import personal
 
@@ -81,16 +81,16 @@ def main():
                 
             # Bifortly
             if today.weekday() == REVIEW_DOW and ((day_of_year - BIFORT_START + 1) // 7) % 4 == 0:
-                duolingoVisuals.duolingo_bifortly_visuals(cur)
+                visuals_duolingo.duolingo_bifortly_visuals(cur)
                 
             # Weekly
             #if today.weekday() == REVIEW_DOW:
             
             # Daily
             if True:
-                #visuals_Duolingo.duolingo_weekly_visuals(cur)
-                visuals_Body.body_week_visuals(cur)
-                visuals_Deep_Work.deepWork_week_visuals(cur)
+                visuals_duolingo.duolingo_weekly_visuals(cur)
+                visuals_body.body_week_visuals(cur)
+                visuals_deepwork.deepwork_week_visuals(cur)
         except:
             with open("trackr_log.txt", "a") as error_file:
                 error_file.write(traceback.format_exc())

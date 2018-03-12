@@ -4,7 +4,7 @@ import os
 
 from getDate import get_date
 
-def deepWork_week_visuals(cur):
+def deepwork_week_visuals(cur):
     DEEP_WORK_TARGET = 15
     week_Date = []
     week_Prog = []
