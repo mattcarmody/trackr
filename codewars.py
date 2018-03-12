@@ -7,7 +7,7 @@ import requests
 from getDate import get_date
 import personal
 
-def update_Codewars(cur):
+def update_codewars(cur):
     # Pull and load JSON data
     cwUrl = "https://www.codewars.com/api/v1/users/{}".format(personal.data["cwUsername"])
     cwResponse = requests.get(cwUrl, auth=("?access_key", personal.data["cwAccessKey"]))

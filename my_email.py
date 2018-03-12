@@ -48,7 +48,7 @@ def text_to_int(num_text, num_words={}):
             current = 0
     return result + current
 
-def update_email(cur):    
+def update_my_email(cur):    
     # Connect to dedicated email account and fetch relevant, unopened emails
     imap_obj = imapclient.IMAPClient('imap.gmail.com', ssl=True)
     imap_obj.login(TRACKR_EMAIL_ADDRESS, SECRET_PASSWORD)

@@ -7,7 +7,7 @@ import requests
 from getDate import get_date
 import personal
 
-def update_Chess(cur):
+def update_chess(cur):
     # Pull and load JSON data
     chessUrl = "https://api.chess.com/pub/player/{}/stats".format(personal.data["chessUsername"])
     chessResponse = requests.get(chessUrl)

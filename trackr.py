@@ -9,13 +9,13 @@ import sqlite3
 import sys
 import traceback
 
-from hackerRank import update_HackerRank
-from duolingo import update_Duolingo
-from codewars import update_Codewars
-from chess import update_Chess
-from goodreads import update_Goodreads
-from pullFromEmail import update_email
-from trackWarmUp import update_warmup
+from hackerrank import update_hackerrank
+from duolingo import update_duolingo
+from codewars import update_codewars
+from chess import update_chess
+from goodreads import update_goodreads
+from my_email import update_my_email
+from track_warmup import update_track_warmup
 
 import visuals_Body
 import visuals_Duolingo
@@ -34,43 +34,43 @@ def main():
         cur = conn.cursor()
         
         try:
-            cur = update_Duolingo(cur)
+            cur = update_duolingo(cur)
         except:
             with open("trackr_log.txt", "a") as error_file:
                 error_file.write(traceback.format_exc())
             print("Duolingo failed...")
         try:
-            cur = update_Codewars(cur)
+            cur = update_codewars(cur)
         except:
             with open("trackr_log.txt", "a") as error_file:
                 error_file.write(traceback.format_exc())
             print("Codewars failed...")
         try:
-            cur = update_Chess(cur)
+            cur = update_chess(cur)
         except:
             with open("trackr_log.txt", "a") as error_file:
                 error_file.write(traceback.format_exc())
             print("Chess failed...")
         try:
-            cur = update_Goodreads(cur)
+            cur = update_goodreads(cur)
         except:
             with open("trackr_log.txt", "a") as error_file:
                 error_file.write(traceback.format_exc())
             print("Goodreads failed...")
         #try:
-        #    cur = update_HackerRank(cur)
+        #    cur = update_hackerrank(cur)
         #except:
             #with open("trackr_log.txt", "a") as error_file:
                 #error_file.write(traceback.format_exc())    
             #print("HackerRank failed...")
         try:
-            cur = update_email(cur)
+            cur = update_my_email(cur)
         except:
             with open("trackr_log.txt", "a") as error_file:
                 error_file.write(traceback.format_exc())
             print("Email update failed...")
         try:
-            cur = update_warmup(cur)
+            cur = update_track_warmup(cur)
         except:
             with open("trackr_log.txt", "a") as error_file:
                 error_file.write(traceback.format_exc())

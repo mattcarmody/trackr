@@ -7,7 +7,7 @@ import requests
 from getDate import get_date
 import personal
 
-def update_Duolingo(cur):    
+def update_duolingo(cur):    
     # Pull and load JSON data
     duoUrl = "https://www.duolingo.com/users/{}".format(personal.data["duoUsername"])
     duoResponse = requests.get(duoUrl)

@@ -9,7 +9,7 @@ from selenium.webdriver.common.keys import Keys
 from getDate import get_date
 import personal
 
-def update_HackerRank(cur):
+def update_hackerrank(cur):
     today = get_date()
     
     # Navigate through login with Selenium

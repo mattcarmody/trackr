@@ -7,7 +7,7 @@ import requests
 from getDate import get_date
 import personal
 
-def update_Goodreads(cur):
+def update_goodreads(cur):
     # Scrape and parse using Beautiful Soup
     bsUrl = "https://www.goodreads.com/review/list/{}?shelf={}".format(personal.data["grUserID"], personal.data["grShelf"])
     res = requests.get(bsUrl)

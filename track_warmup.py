@@ -2,7 +2,7 @@ import sqlite3
 
 from getDate import get_date
 
-def update_warmup(trackr_cur):
+def update_track_warmup(trackr_cur):
     SRC = "/home/matt/Warm-Up-Quiz/warmUp.db"
     today = get_date()
     new_data = []
