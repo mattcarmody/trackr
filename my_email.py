@@ -1,4 +1,4 @@
-# pullFromEmail.py - Adds activities from my email inbox to spreadsheet
+# my_email.py - Adds activities from my email inbox to spreadsheet
 # I dicatate these emails to Siri, they follow a predictable format of:
 # keyword num keyword num keyword num ...
 # Requires information stored in personal.py
@@ -48,24 +48,34 @@ def text_to_int(num_text, num_words={}):
             current = 0
     return result + current
 
-def update_my_email(cur):    
-    # Connect to dedicated email account and fetch relevant, unopened emails
+def connect_and_fetch_emails():
     imap_obj = imapclient.IMAPClient('imap.gmail.com', ssl=True)
     imap_obj.login(TRACKR_EMAIL_ADDRESS, SECRET_PASSWORD)
     imap_obj.select_folder(FOLDER, readonly=False)
     UIDs = imap_obj.search(['FROM', PERSONAL_EMAIL_ADDRESS, 'UNSEEN'])
-    raw_messages = imap_obj.fetch(UIDs, ['BODY[]'])
+    return imap_obj, UIDs, imap_obj.fetch(UIDs, ['BODY[]'])
+    
+def verify_text_body(message):
+    if message.text_part != None:
+        logging.debug("Testing testing")
+        body = message.text_part.get_payload().decode(message.text_part.charset)
+        return body
+    elif message.html_part != None:
+        print("This is an HTML message...")
+        logging.warning("Reading an HTML email!")
+        return False
+    else:
+        print("No text or html parts. Maybe no message?")
+        logging.warning("No text or html parts to the message?")
+        return False
+
+def update_my_email(cur):    
+    imap_obj, UIDs, raw_messages = connect_and_fetch_emails()
     
     for i in range(len(UIDs)): # For each email
-        message = pyzmail.PyzMessage.factory(raw_messages[UIDs[i]][b'BODY[]'])    
-        # Verify that it is a text body as expected, not HTML
-        if message.text_part != None:
-            body = message.text_part.get_payload().decode(message.text_part.charset)
-        elif message.html_part != None:
-            print("This is an HTML message...")
-            continue
-        else:
-            print("No text or html parts. Maybe no message?")
+        message = pyzmail.PyzMessage.factory(raw_messages[UIDs[i]][b'BODY[]'])  
+        body = verify_text_body(message)
+        if not body:
             continue
         
         # Trim footer and convert any numbers to integers
@@ -94,6 +104,7 @@ def update_my_email(cur):
             table = "deepWork"
         else:
             print("I don't know which table to use for this email subject: {} (so I'm skipping it)".format(message.get_subject()))
+            logging.warning("Skipping an unknown keyword!")
             continue
             
         # Call relevant db row for the email date
