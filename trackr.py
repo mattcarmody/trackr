@@ -56,16 +56,18 @@ def main():
 				visuals_duolingo.duolingo_weekly_visuals(cur)
 			# Each call
 			if True:
-				'''try:
+				try:
 					visuals_body.body_week_visuals(cur)
 				except:
 					print("Body visuals failed")
-					logging.critical("Body visuals failed!")'''
+					with open("trackr_log.txt", "a") as error_file:
+					    error_file.write(traceback.format_exc())
 				try:
 					visuals_deepwork.deepwork_week_visuals(cur)
 				except:
 					print("Deep work visuals failed")
-					logging.critical("Deep work visuals failed!")
+					with open("trackr_log.txt", "a") as error_file:
+					    error_file.write(traceback.format_exc())
 		except:
 			with open("trackr_log.txt", "a") as error_file:
 				error_file.write(traceback.format_exc())
