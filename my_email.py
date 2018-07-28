@@ -6,9 +6,12 @@
 import datetime
 import email
 import imapclient
+import logging
 import pyzmail
 
 import personal
+
+logging.basicConfig(filename='trackr_log.txt', level=logging.DEBUG, format=' %(asctime)s - %(levelname)s - %(message)s')
 
 TRACKR_EMAIL_ADDRESS = personal.data["trackrEmail"]
 SECRET_PASSWORD = personal.data["trackrEmailPassword"]
@@ -112,7 +115,11 @@ def update_my_email(cur):
         pars_date = datetime.datetime.strptime(date, '%a, %d %b %Y %X %z').strftime('%Y-%m-%d')
         cur.execute('SELECT * FROM \"{}\" WHERE Date = \"{}\"'.format(table, pars_date))
         rel_entry = cur.fetchone()
-        
+        if rel_entry == None:
+            rel_entry = [pars_date, 0, 0, 0, 0]
+            cur.execute('INSERT INTO deepWork VALUES (?, ?, ?, ?, ?)', (str(rel_entry[0]), rel_entry[1], rel_entry[2], rel_entry[3], rel_entry[4]))
+            print("Created new entry for {}".format(pars_date))
+            
         # Update relevant value for each keyword/number pair
         for i in range(0, len(words), 2):
             if type(words[i]) != str:
@@ -124,8 +131,7 @@ def update_my_email(cur):
                 if key in words[i].lower():
                     col = METRIC_COLUMN_DICT[key][0]
                     col_name = METRIC_COLUMN_DICT[key][1]
-                    break
-                   
+                    break     
             new_value = rel_entry[col] + words[i+1]
             cur.execute('UPDATE {} SET {} = {} WHERE Date = \"{}\"'.format(table, col_name, new_value, pars_date))
             print("Adding {} to {}'s {} on {}.".format(words[i+1], table, col_name, pars_date))
