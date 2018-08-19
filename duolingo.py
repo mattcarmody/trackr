@@ -21,11 +21,11 @@ def update_duolingo(cur):
     # If last entry is not today, add new data. Else skip.
     today = get_date()
     if today != last_entry[0]:
-        sql = ''' INSERT INTO duolingo(Date, Greek, Esperanto, Vietnamese, Italian, Welsh, Irish, Czech, Spanish, Chinese, Russian, Portuguese, Norwegian, Turkish, Romanian, Polish, Dutch, French, German, HighValyrian, Korean, Danish, Hungarian, Japanese, Hebrew, Swahili, Swedish, Ukrainian) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'''
+        sql = ''' INSERT INTO duolingo(Date, Greek, Esperanto, Vietnamese, Italian, Welsh, Irish, Czech, Indonesian, Spanish, Chinese, Russian, Portuguese, Norwegian, Turkish, Romanian, Polish, Dutch, French, German, HighValyrian, Korean, Danish, Hungarian, Japanese, Hebrew, Swahili, Swedish, Ukrainian) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'''
         new_entry = [today]
         for i in range(len(duoData["languages"])):
             new_entry.append(duoData["languages"][i]["points"])
-        cur.execute(sql, new_entry[0:28])
+        cur.execute(sql, new_entry[0:29])
         print("New data added to Duolingo.")
     else:
         print("Duolingo was already updated today.")
