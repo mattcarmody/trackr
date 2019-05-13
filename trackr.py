@@ -32,7 +32,7 @@ BIFORT_START = 1
 REVIEW_DOW = 6
 
 def main():
-	logging.debug("Start main.")
+	logging.debug("\n\n\nStart main.")
 	conn = sqlite3.connect("trackr.db")
 	with conn:     
 		cur = conn.cursor()
