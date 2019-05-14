@@ -23,16 +23,13 @@ def insert_goodreads_data(cur, today):
 	sql = ''' INSERT INTO goodreads(Date, Count) VALUES (?,?)'''
 	new_entry = [today, books_read]
 	cur.execute(sql, new_entry[0:2])
-	return cur
 
 def check_goodreads(cur):
 	last_entry_date = date_related.get_date_of_last_entry(cur, "goodreads")
 	today = date_related.get_date()
 
 	if today != last_entry_date[0]:
-		cur = insert_goodreads_data(cur, today)
+		insert_goodreads_data(cur, today)
 		print("New data added to Goodreads.")
 	else:
 		print("Goodreads was already updated today.")
-	
-	return cur

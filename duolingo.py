@@ -30,4 +30,3 @@ def update_duolingo(cur):
 		print("New data added to Duolingo.")
 	else:
 		print("Duolingo was already updated today.")
-	return cur

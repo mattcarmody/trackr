@@ -40,12 +40,11 @@ update_functions = [
 def call_update_functions(cur):
 	for f in update_functions:
 		try:
-			cur = f(cur)
+			f(cur)
 		except:
 			with open("trackr_log.txt", "a") as error_file:
 				error_file.write(traceback.format_exc())
 			print(str(f) + " failed...")
-	return cur
 
 bifortly_viz_functions = [visuals_duolingo.duolingo_bifortly_visuals]
 weekly_viz_functions = [visuals_duolingo.duolingo_weekly_visuals]
@@ -84,15 +83,14 @@ def call_viz_functions(cur):
 				with open("trackr_log.txt", "a") as error_file:
 					error_file.write(traceback.format_exc())
 				print(str(f) + " failed...")
-	return cur
 
 def main():
 	logging.debug("\n\n\nStart main.")
 	conn = sqlite3.connect("trackr.db")
 	with conn:     
 		cur = conn.cursor()
-		cur = call_update_functions(cur)
-		cur = call_viz_functions(cur)
+		call_update_functions(cur)
+		call_viz_functions(cur)
 	logging.debug("Finish main.")
 		
 if __name__ == "__main__":

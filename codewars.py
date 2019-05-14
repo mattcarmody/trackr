@@ -28,5 +28,4 @@ def update_codewars(cur):
 		print("New data added to Codewars.")
 	else:
 		print("Codewars was already updated today.")
-	return cur
 	

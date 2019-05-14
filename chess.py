@@ -28,5 +28,4 @@ def update_chess(cur):
 		print("New data added to Chess.")
 	else:
 		print("Chess was already updated today.")
-	return cur
 	

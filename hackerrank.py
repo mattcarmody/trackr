@@ -113,5 +113,4 @@ def update_hackerrank(cur):
         print("HackerRank was already updated today.")
     
     browser.quit() 
-    return cur
     

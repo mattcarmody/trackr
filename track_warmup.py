@@ -37,4 +37,3 @@ def update_track_warmup(trackr_cur):
     trackr_cur.execute("UPDATE warmup SET Python = ?, Excel = ? WHERE Date = ?", (py_count, ex_count, today))
     warmup_conn.commit()
     print("Completed update to warmup.")
-    return trackr_cur
