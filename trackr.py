@@ -32,7 +32,7 @@ update_functions = [
 	duolingo.update_duolingo, 
 	codewars.update_codewars, 
 	chess.update_chess, 
-	goodreads.update_goodreads, 
+	goodreads.check_goodreads, 
 	my_email.update_my_email, 
 	track_warmup.update_track_warmup,
 	]

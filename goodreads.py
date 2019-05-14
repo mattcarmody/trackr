@@ -4,7 +4,7 @@
 import bs4
 import requests
 
-from getDate import get_date
+import getDate
 import personal
 
 def scrape_goodreads():
@@ -18,18 +18,19 @@ def scrape_goodreads():
 		count += 1
 	return count
 
-def update_goodreads(cur):
-	# Select most recent entry
-	cur.execute("SELECT Date FROM goodreads ORDER BY Date DESC LIMIT 1")
-	last_entry = cur.fetchone()
-	
-	# If last entry is not today, scrape and add new data. Else skip.
-	today = get_date()
-	if today != last_entry[0]:
-		books_read = scrape_goodreads()
-		sql = ''' INSERT INTO goodreads(Date, Count) VALUES (?,?)'''
-		new_entry = [today, books_read]
-		cur.execute(sql, new_entry[0:2])
+def insert_goodreads_data(cur, today):
+	books_read = scrape_goodreads()
+	sql = ''' INSERT INTO goodreads(Date, Count) VALUES (?,?)'''
+	new_entry = [today, books_read]
+	cur.execute(sql, new_entry[0:2])
+	return cur
+
+def check_goodreads(cur):
+	last_entry_date = getDate.get_date_of_last_entry(cur, "goodreads")
+	today = getDate.get_date()
+
+	if today != last_entry_date[0]:
+		cur = insert_goodreads_data(cur, today)
 		print("New data added to Goodreads.")
 	else:
 		print("Goodreads was already updated today.")
