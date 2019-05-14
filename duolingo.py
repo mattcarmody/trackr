@@ -13,14 +13,11 @@ def scrape_duolingo():
 	duoResponse.raise_for_status()
 	return json.loads(duoResponse.text)
 
-def update_duolingo(cur):    
-	# Select most recent entry
-	cur.execute("SELECT Date FROM duolingo ORDER BY Date DESC LIMIT 1")
-	last_entry = cur.fetchone()
-	
-	# If last entry is not today, add new data. Else skip.
+def track_duolingo(cur):    
+	last_entry_date = date_related.get_date_of_last_entry(cur, "duolingo")
 	today = date_related.get_date()
-	if today != last_entry[0]:
+	
+	if today != last_entry_date[0]:
 		duoData = scrape_duolingo()
 		sql = ''' INSERT INTO duolingo(Date, Greek, Esperanto, Vietnamese, Italian, Welsh, Irish, Czech, Indonesian, Spanish, Chinese, Russian, Portuguese, Norwegian, Turkish, Romanian, Polish, Dutch, French, German, HighValyrian, Korean, Danish, Hungarian, Japanese, Hebrew, Swahili, Swedish, Ukrainian) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'''
 		new_entry = [today]

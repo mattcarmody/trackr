@@ -24,7 +24,7 @@ def insert_goodreads_data(cur, today):
 	new_entry = [today, books_read]
 	cur.execute(sql, new_entry[0:2])
 
-def check_goodreads(cur):
+def track_goodreads(cur):
 	last_entry_date = date_related.get_date_of_last_entry(cur, "goodreads")
 	today = date_related.get_date()
 

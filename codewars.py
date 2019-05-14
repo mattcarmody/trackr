@@ -13,14 +13,11 @@ def scrape_codewars():
 	cwResponse.raise_for_status()
 	return json.loads(cwResponse.text)
 
-def update_codewars(cur):
-	# Select most recent entry
-	cur.execute("SELECT Date FROM codewars ORDER BY Date DESC LIMIT 1")
-	last_entry = cur.fetchone()
-	
-	# If last entry is not today, add new data. Else skip.
+def track_codewars(cur):
+	last_entry_date = date_related.get_date_of_last_entry(cur, "codewars")
 	today = date_related.get_date()
-	if today != last_entry[0]:
+	
+	if today != last_entry_date[0]:
 		cwData = scrape_codewars()
 		sql = ''' INSERT INTO codewars(Date, Honor, Points, Challenges) VALUES (?,?,?,?)'''
 		new_entry = [today, cwData["honor"], cwData["ranks"]["overall"]["score"], cwData["codeChallenges"]["totalCompleted"]]

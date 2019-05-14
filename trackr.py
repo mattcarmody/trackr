@@ -54,10 +54,10 @@ def call_viz_functions(cur):
 		call_functions(cur, daily_viz_functions)
 
 track_functions = [
-	duolingo.update_duolingo, 
-	codewars.update_codewars, 
-	chess.update_chess, 
-	goodreads.check_goodreads, 
+	duolingo.track_duolingo, 
+	codewars.track_codewars, 
+	chess.track_chess, 
+	goodreads.track_goodreads, 
 	my_email.update_my_email, 
 	]
 bifortly_viz_functions = [
