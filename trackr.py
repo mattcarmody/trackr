@@ -28,68 +28,55 @@ import personal
 BIFORT_START = 1
 REVIEW_DOW = 6
 
-update_functions = [
-	duolingo.update_duolingo, 
-	codewars.update_codewars, 
-	chess.update_chess, 
-	goodreads.check_goodreads, 
-	my_email.update_my_email, 
-	track_warmup.update_track_warmup,
-	]
-
-def call_update_functions(cur):
-	for f in update_functions:
+def call_functions(cur, function_list):
+	for f in function_list:
 		try:
 			f(cur)
 		except:
 			with open("trackr_log.txt", "a") as error_file:
 				error_file.write(traceback.format_exc())
 			print(str(f) + " failed...")
-
-bifortly_viz_functions = [visuals_duolingo.duolingo_bifortly_visuals]
-weekly_viz_functions = [visuals_duolingo.duolingo_weekly_visuals]
-daily_viz_functions = [
-	visuals_body.body_week_visuals,
-	visuals_deepwork.deepwork_week_visuals,
-	]
+			
+def call_track_functions(cur):
+	call_functions(cur, track_functions)
 
 def call_viz_functions(cur):
 	today = datetime.date.today()
 	day_of_year = datetime.date.today().timetuple().tm_yday 
 	# Bifortly (every 4th Sunday)
 	if today.weekday() == REVIEW_DOW and ((day_of_year - BIFORT_START + 1) // 7) % 4 == 0:
-		for f in bifortly_viz_functions:
-			try:
-				f(cur)
-			except:
-				with open("trackr_log.txt", "a") as error_file:
-					error_file.write(traceback.format_exc())
-				print(str(f) + " failed...")
+		call_functions(cur, bifortly_viz_functions)
 	# Weekly
 	if today.weekday() == REVIEW_DOW:
-		for f in weekly_viz_functions:
-			try:
-				f(cur)
-			except:
-				with open("trackr_log.txt", "a") as error_file:
-					error_file.write(traceback.format_exc())
-				print(str(f) + " failed...")
+		call_functions(cur, weekly_viz_functions)
 	# Daily
 	if True:
-		for f in daily_viz_functions:
-			try:
-				f(cur)
-			except:
-				with open("trackr_log.txt", "a") as error_file:
-					error_file.write(traceback.format_exc())
-				print(str(f) + " failed...")
+		call_functions(cur, daily_viz_functions)
+
+track_functions = [
+	duolingo.update_duolingo, 
+	codewars.update_codewars, 
+	chess.update_chess, 
+	goodreads.check_goodreads, 
+	my_email.update_my_email, 
+	]
+bifortly_viz_functions = [
+	visuals_duolingo.duolingo_bifortly_visuals,
+	]
+weekly_viz_functions = [
+	visuals_duolingo.duolingo_weekly_visuals,
+	]
+daily_viz_functions = [
+	visuals_body.body_week_visuals,
+	visuals_deepwork.deepwork_week_visuals,
+	]
 
 def main():
 	logging.debug("\n\n\nStart main.")
 	conn = sqlite3.connect("trackr.db")
 	with conn:     
 		cur = conn.cursor()
-		call_update_functions(cur)
+		call_track_functions(cur)
 		call_viz_functions(cur)
 	logging.debug("Finish main.")
 		
