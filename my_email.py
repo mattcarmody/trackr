@@ -138,5 +138,4 @@ def update_my_email(cur):
 
     print("Update from email complete.")
     imap_obj.logout()
-    return cur
     
