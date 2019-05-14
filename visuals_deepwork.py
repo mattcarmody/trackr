@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import matplotlib.ticker as plticker
 import os
 
-from getDate import get_date
+from date_related import get_date
 
 def set_dates(week_date):
     for i in range(7, 0, -1):

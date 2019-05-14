@@ -4,7 +4,7 @@
 import bs4
 import requests
 
-import getDate
+import date_related
 import personal
 
 def scrape_goodreads():
@@ -26,8 +26,8 @@ def insert_goodreads_data(cur, today):
 	return cur
 
 def check_goodreads(cur):
-	last_entry_date = getDate.get_date_of_last_entry(cur, "goodreads")
-	today = getDate.get_date()
+	last_entry_date = date_related.get_date_of_last_entry(cur, "goodreads")
+	today = date_related.get_date()
 
 	if today != last_entry_date[0]:
 		cur = insert_goodreads_data(cur, today)

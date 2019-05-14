@@ -6,11 +6,11 @@ import re
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 
-from getDate import get_date
+import date_related
 import personal
 
 def update_hackerrank(cur):
-    today = get_date()
+    today = date_related.get_date()
     
     # Navigate through login with Selenium
     url = "https://www.hackerrank.com/{}".format(personal.data["hrUsername"])

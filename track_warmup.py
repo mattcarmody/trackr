@@ -1,10 +1,10 @@
 import sqlite3
 
-from getDate import get_date
+import date_related
 
 def update_track_warmup(trackr_cur):
     SRC = "/home/matt/Warm-Up-Quiz/warmUp.db"
-    today = get_date()
+    today = date_related.get_date()
     new_data = []
     py_count = 0
     ex_count = 0

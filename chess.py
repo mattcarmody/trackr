@@ -4,7 +4,7 @@
 import json
 import requests
 
-from getDate import get_date
+import date_related
 import personal
 
 def scrape_chess():
@@ -19,7 +19,7 @@ def update_chess(cur):
 	last_entry = cur.fetchone()
 	
 	# If last entry is not today, scrape and add new data. Else skip.
-	today = get_date()
+	today = date_related.get_date()
 	if today != last_entry[0]:
 		chessData = scrape_chess()
 		sql = ''' INSERT INTO chess(Date, Daily, Daily960, Rapid, Bullet, Blitz) VALUES (?,?,?,?,?,?)'''

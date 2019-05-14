@@ -4,7 +4,7 @@
 import json
 import requests
 
-from getDate import get_date
+import date_related
 import personal
 
 def scrape_duolingo():
@@ -19,7 +19,7 @@ def update_duolingo(cur):
 	last_entry = cur.fetchone()
 	
 	# If last entry is not today, add new data. Else skip.
-	today = get_date()
+	today = date_related.get_date()
 	if today != last_entry[0]:
 		duoData = scrape_duolingo()
 		sql = ''' INSERT INTO duolingo(Date, Greek, Esperanto, Vietnamese, Italian, Welsh, Irish, Czech, Indonesian, Spanish, Chinese, Russian, Portuguese, Norwegian, Turkish, Romanian, Polish, Dutch, French, German, HighValyrian, Korean, Danish, Hungarian, Japanese, Hebrew, Swahili, Swedish, Ukrainian) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'''

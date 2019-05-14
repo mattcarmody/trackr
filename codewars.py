@@ -4,7 +4,7 @@
 import json
 import requests
 
-from getDate import get_date
+import date_related
 import personal
 
 def scrape_codewars():
@@ -19,7 +19,7 @@ def update_codewars(cur):
 	last_entry = cur.fetchone()
 	
 	# If last entry is not today, add new data. Else skip.
-	today = get_date()
+	today = date_related.get_date()
 	if today != last_entry[0]:
 		cwData = scrape_codewars()
 		sql = ''' INSERT INTO codewars(Date, Honor, Points, Challenges) VALUES (?,?,?,?)'''
