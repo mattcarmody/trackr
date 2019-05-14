@@ -17,9 +17,6 @@ import goodreads
 import my_email
 import track_warmup
 
-# Update functions to be called each runtime
-functions = [duolingo.update_duolingo, codewars.update_codewars, chess.update_chess, goodreads.update_goodreads, my_email.update_my_email, track_warmup.update_track_warmup]
-
 import visuals_body
 import visuals_duolingo
 import visuals_deepwork
@@ -31,48 +28,71 @@ import personal
 BIFORT_START = 1
 REVIEW_DOW = 6
 
+update_functions = [
+	duolingo.update_duolingo, 
+	codewars.update_codewars, 
+	chess.update_chess, 
+	goodreads.update_goodreads, 
+	my_email.update_my_email, 
+	track_warmup.update_track_warmup,
+	]
+
+def call_update_functions(cur):
+	for f in update_functions:
+		try:
+			cur = f(cur)
+		except:
+			with open("trackr_log.txt", "a") as error_file:
+				error_file.write(traceback.format_exc())
+			print(str(f) + " failed...")
+	return cur
+
+bifortly_viz_functions = [visuals_duolingo.duolingo_bifortly_visuals]
+weekly_viz_functions = [visuals_duolingo.duolingo_weekly_visuals]
+daily_viz_functions = [
+	visuals_body.body_week_visuals,
+	visuals_deepwork.deepwork_week_visuals,
+	]
+
+def call_viz_functions(cur):
+	today = datetime.date.today()
+	day_of_year = datetime.date.today().timetuple().tm_yday 
+	# Bifortly (every 4th Sunday)
+	if today.weekday() == REVIEW_DOW and ((day_of_year - BIFORT_START + 1) // 7) % 4 == 0:
+		for f in bifortly_viz_functions:
+			try:
+				f(cur)
+			except:
+				with open("trackr_log.txt", "a") as error_file:
+					error_file.write(traceback.format_exc())
+				print(str(f) + " failed...")
+	# Weekly
+	if today.weekday() == REVIEW_DOW:
+		for f in weekly_viz_functions:
+			try:
+				f(cur)
+			except:
+				with open("trackr_log.txt", "a") as error_file:
+					error_file.write(traceback.format_exc())
+				print(str(f) + " failed...")
+	# Daily
+	if True:
+		for f in daily_viz_functions:
+			try:
+				f(cur)
+			except:
+				with open("trackr_log.txt", "a") as error_file:
+					error_file.write(traceback.format_exc())
+				print(str(f) + " failed...")
+	return cur
+
 def main():
 	logging.debug("\n\n\nStart main.")
 	conn = sqlite3.connect("trackr.db")
 	with conn:     
 		cur = conn.cursor()
-		# Update function calls
-		for f in functions:
-			try:
-				cur = f(cur)
-			except:
-				with open("trackr_log.txt", "a") as error_file:
-					error_file.write(traceback.format_exc())
-				print(str(f) + " failed...")
-		# Visualization function calls
-		try:
-			today = datetime.date.today()
-			day_of_year = datetime.date.today().timetuple().tm_yday 
-			# Bifortly (every 4th Sunday)
-			if today.weekday() == REVIEW_DOW and ((day_of_year - BIFORT_START + 1) // 7) % 4 == 0:
-				visuals_duolingo.duolingo_bifortly_visuals(cur)
-			# Weekly
-			if today.weekday() == REVIEW_DOW:
-				visuals_duolingo.duolingo_weekly_visuals(cur)
-			# Each call
-			if True:
-				'''try:
-					visuals_body.body_week_visuals(cur)
-				except:
-					print("Body visuals failed")
-					with open("trackr_log.txt", "a") as error_file:
-					    error_file.write(traceback.format_exc())'''
-				try:
-					visuals_deepwork.deepwork_week_visuals(cur)
-				except:
-					print("Deep work visuals failed")
-					with open("trackr_log.txt", "a") as error_file:
-					    error_file.write(traceback.format_exc())
-		except:
-			with open("trackr_log.txt", "a") as error_file:
-				error_file.write(traceback.format_exc())
-			print("Visualizations failed...")
-			logging.critical("Visualizations failed!")
+		cur = call_update_functions(cur)
+		cur = call_viz_functions(cur)
 	logging.debug("Finish main.")
 		
 if __name__ == "__main__":
