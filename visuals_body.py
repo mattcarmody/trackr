@@ -44,6 +44,7 @@ def body_week_visuals(cur):
     plt.ylabel("Minutes or Repetitions")
     plt.title("Body Work this Week")
     #plt.plot([0, 6], [BODY_TARGET/7, BODY_TARGET], 'k-', lw=1)
-    plt.show()
+    plt.show(block=True)
     #plt.savefig("/home/matt/Pictures/trackr/body_visual.jpg")
     #os.system("/usr/bin/gsettings set org.gnome.desktop.background picture-uri file:///home/matt/Pictures/trackr/body_visual.jpg")
+    plt.close()

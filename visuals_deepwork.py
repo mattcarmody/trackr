@@ -42,7 +42,8 @@ def create_stackplot(target, week_date, sum_prog, sum_web, sum_excel, sum_apps):
     plt.ylabel("Total Hours")
     plt.title("Deep Work this Week")
     plt.plot([0, 6], [target/7, target], 'k-', lw=1)
-    plt.show()
+    plt.show(block=True)
+    plt.close()
     
     # OR set plot to background image
     #plt.savefig("/home/matt/Pictures/trackr/deep_work_visual.jpg")

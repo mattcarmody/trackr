@@ -49,7 +49,8 @@ def duolingo_bifortly_visuals(cur):
     plt.ylabel("Total Points")
     plt.title("Duolingo this Bifort")
     plt.plot([0, 27], [DUO_BIFORT_TARGET/28, DUO_BIFORT_TARGET], 'k-', lw=1)
-    plt.show(block=False)
+    plt.show(block=True)
+    plt.close()
 
 def duolingo_weekly_visuals(cur):
     DUO_WEEKLY_TARGET = 300
@@ -93,5 +94,6 @@ def duolingo_weekly_visuals(cur):
     plt.ylabel("Total Points")
     plt.title("Duolingo this Week")
     plt.plot([0, 6], [DUO_WEEKLY_TARGET/7, DUO_WEEKLY_TARGET], 'k-', lw=1)
-    plt.show()
+    plt.show(block=True)
+    plt.close()
     
