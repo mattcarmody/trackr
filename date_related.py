@@ -1,8 +1,11 @@
-# Component in trackr
-# A particular format of the date is called in many modules.
-# This was created to stay DRY.
-
 import datetime
+
+def get_log_time():
+	current_dt = datetime.datetime.now()
+	yr_month = current_dt.strftime("%Y_%m")
+	day = current_dt.strftime("%d")
+	file_name = current_dt.strftime("log_%H_%M_%S.txt")
+	return yr_month, day, file_name
 
 def get_date(offset_days=0):
     day = (datetime.date.today() - datetime.timedelta(days=offset_days)).strftime("%Y-%m-%d")

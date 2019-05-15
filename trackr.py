@@ -4,11 +4,10 @@
 
 import datetime
 import logging
+import os
 import sqlite3
 import sys
 import traceback
-
-logging.basicConfig(filename='trackr_log.txt', level=logging.DEBUG, format=' %(asctime)s - %(levelname)s - %(message)s')
 
 import chess
 import codewars
@@ -21,6 +20,7 @@ import visuals_body
 import visuals_duolingo
 import visuals_deepwork
 
+import date_related
 import personal
 
 # A bifort is a unit of time equal to 28 days starting on Monday
@@ -28,13 +28,21 @@ import personal
 BIFORT_START = 1
 REVIEW_DOW = 6
 
+def setup_logger():
+	YR_MONTH, DAY, FILENAME = date_related.get_log_time()
+	os.makedirs('logs/{}'.format(YR_MONTH), exist_ok=True)
+	os.makedirs('logs/{}/{}'.format(YR_MONTH, DAY), exist_ok=True)
+	DEST = 'logs/{}/{}/{}'.format(YR_MONTH, DAY, FILENAME)
+	if not os.path.isfile(DEST):
+		open(DEST, 'a').close()
+	logging.basicConfig(filename=DEST, level=logging.DEBUG, format=' %(asctime)s - %(levelname)s - %(message)s')
+
 def call_functions(cur, function_list):
 	for f in function_list:
 		try:
 			f(cur)
 		except:
-			with open("trackr_log.txt", "a") as error_file:
-				error_file.write(traceback.format_exc())
+			logging.exception("Failure in call_functions")
 			print(str(f) + " failed...")
 			
 def call_track_functions(cur):
@@ -72,7 +80,8 @@ daily_viz_functions = [
 	]
 
 def main():
-	logging.debug("\n\n\nStart main.")
+	setup_logger()
+	logging.debug("Start main after setting up logger.")
 	conn = sqlite3.connect("trackr.db")
 	with conn:     
 		cur = conn.cursor()

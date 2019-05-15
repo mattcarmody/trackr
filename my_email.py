@@ -11,8 +11,6 @@ import pyzmail
 
 import personal
 
-logging.basicConfig(filename='trackr_log.txt', level=logging.DEBUG, format=' %(asctime)s - %(levelname)s - %(message)s')
-
 TRACKR_EMAIL_ADDRESS = personal.data["trackrEmail"]
 SECRET_PASSWORD = personal.data["trackrEmailPassword"]
 PERSONAL_EMAIL_ADDRESS = personal.data["Email"]
