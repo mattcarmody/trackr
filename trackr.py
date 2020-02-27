@@ -11,9 +11,9 @@ import traceback
 
 import chess
 import codewars
-import duolingo
+import _duolingo as duolingo
 import goodreads
-import my_email
+#import my_email
 import track_warmup
 
 import visuals_body
@@ -66,7 +66,7 @@ track_functions = [
 	codewars.track_codewars, 
 	chess.track_chess, 
 	goodreads.track_goodreads, 
-	my_email.update_my_email, 
+	#my_email.update_my_email,
 	]
 bifortly_viz_functions = [
 	visuals_duolingo.duolingo_bifortly_visuals,
